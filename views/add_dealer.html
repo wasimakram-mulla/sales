@@ -1,0 +1,14 @@
+<div class="col-md-8 col-sm-12" ng-controller="AddDealerController">
+	<h3 class="text-warning">Add Dealer</h3>
+	<form ng-submit="saveDetails();">
+		<input type="text" class="form-control" ng-model="cname" placeholder="Dealer Name" autofocus required/><br/>
+		<textarea class="form-control" ng-model="addr" placeholder="Address" required></textarea><br/>
+		<input type="text" class="form-control" ng-model="city" placeholder="City" required /><br/>
+		<input type="number" class="form-control" ng-model="pincode" placeholder="Area Pincode" required /><br/>
+		<input type="number" class="form-control" ng-model="pcontact" placeholder="Primary Contact" required /><br/>
+		<input type="number" class="form-control" ng-model="acontact" placeholder="Alternate Contact (optional)" /><br/>
+		<input type="email" class="form-control" ng-model="email" placeholder="Email Id (optional)" /><br/>
+		<button type="submit" class="btn btn-success">Save Details</button>
+		<button type="reset" class="btn btn-info">Reset</button>
+	</form>
+</div>

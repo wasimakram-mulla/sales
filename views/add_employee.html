@@ -1,0 +1,30 @@
+<div class="col-md-8 col-sm-12" ng-controller="AddEmployeeController">
+	<h3 class="text-warning">Add Employee</h3>
+	<form ng-submit="saveDetails();">
+		<div class="col-md-6 col-sm-12">
+		<input type="text" class="form-control" ng-model="ename" placeholder="Name" autofocus required/><br/>		
+		<input type="number" class="form-control" ng-model="pcontact" placeholder="Primary Contact" required /><br/>
+		<input type="number" class="form-control" ng-model="acontact" placeholder="Alternate Contact (optional)" /><br/>
+		<input type="email" class="form-control" ng-model="email" placeholder="Email Id (optional)" /><br/>
+		<input type="text" class="form-control" ng-model="salperday" placeholder="Salary Per Day (INR)" /><br/>
+		<input type="date" class="form-control" ng-model="doj" placeholder="Date Of Joining" /><br/>
+		</div>
+		<div class="col-md-6 col-sm-12">
+		<textarea class="form-control" ng-model="addr" placeholder="Address" required></textarea><br/>
+		<input type="text" class="form-control" ng-model="city" placeholder="City" required /><br/>
+		<input type="number" class="form-control" ng-model="pincode" placeholder="Area Pincode" required /><br/>		
+		<select class="form-control" ng-model="emplType" required>
+			<option value="Full Time Regular">Full Time Regular</option>
+			<option value="Part Time">Part Time</option>
+			<option value="Contract">Contract</option>
+		</select><br/>
+		<select class="form-control" ng-model="designation" ng-options="designation.Desig_name for designation in desigs" required></select><br/>
+		
+		<select class="form-control" ng-model="department" ng-options="department.Dept_name for department in dept" required></select><br/>
+		</div>	
+		
+		<div class="waitspinner"><label class="text-info">Please Wait...</label><i class="fa fa-spinner fa-pulse fa-lg text-info"></i></div><br/>
+		<button type="submit" class="btn btn-success">Save Details</button>
+		<button type="reset" class="btn btn-info">Reset</button>
+	</form>
+</div>

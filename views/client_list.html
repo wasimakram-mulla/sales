@@ -1,0 +1,90 @@
+<div class="col-md-11 col-sm-12" ng-controller="ClientsListController">
+
+<h3 class="text-warning">Clients Details <span style="float:right" class="refreshIcon"><i class="fa fa-refresh text-info" title="Refresh Data" ng-click="reload();"></i></span></h3>
+
+<label>Search Client: </label> <input type="text" ng-model="searchClient" class="searchClient"/><br/><br/>
+<table class="table table-bordered">
+	<thead>
+	  <tr>
+		<th>#</th>
+		<th>Name</th>
+		<th>Address</th>
+		<th>City</th>
+		<th>Contact / Alternate Contact</th>
+		<th>Pincode</th>
+		<th>Email</th>
+		<th></th>
+	  </tr>
+	</thead>
+	<tbody ng-init="tmpCnt=0;">
+	  <tr ng-repeat="data in clientData | filter:searchClient" class="fullData">
+		<td>{{$index+1}}</td>
+		<td>{{data.client_name}}</td>
+		<td>{{data.client_addr}}</td>
+		<td>{{data.client_city}}</td>
+		<td>{{data.client_contact}} / {{data.client_alternate_contact}}</td>
+		<td>{{data.pincode}}</td>
+		<td>{{data.client_email}}</td>
+		<td>
+			<button type="button" class="btn btn-sm btn-success" ng-click="editClientDetails(data.client_id);" data-toggle="modal" data-target="#myModal">Edit</button> 
+			<button type="button" class="btn btn-sm btn-danger" ng-click="SetCIdCname(data.client_id, data.client_name);" data-toggle="modal" data-target="#NonActiveModal">Deactivate</button>
+		</td>
+	  </tr>
+	  <tr class="noData">
+		<td colspan="8"> No Data Found </td>
+	  </tr>
+	  <tr class="loadData">
+		<td colspan="8"> Please Wait... <i class="fa fa-spinner fa-pulse fa-lg text-info"></i></td>
+	  </tr>
+	</tbody>
+</table>
+
+
+<!-- Large modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+	<form ng-submit="saveEdittedDetails();">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Edit Clients Details</h4>
+      </div>
+      <div class="modal-body">
+        
+				<input type="hidden" class="form-control" ng-model="cid" /><br/>
+				<input type="text" class="form-control" ng-model="cname" placeholder="Client Name" autofocus required/><br/>
+				<textarea class="form-control" ng-model="addr" placeholder="Address" required></textarea><br/>
+				<input type="text" class="form-control" ng-model="city" placeholder="City" required /><br/>
+				<input type="text" class="form-control" ng-model="pincode" placeholder="Area Pincode" required /><br/>
+				<input type="text" class="form-control" ng-model="pcontact" placeholder="Primary Contact" required /><br/>
+				<input type="text" class="form-control" ng-model="acontact" placeholder="Alternate Contact (optional)" /><br/>
+				<input type="email" class="form-control" ng-model="email" placeholder="Email Id (optional)" /><br/>
+				
+		
+      </div>
+      <div class="modal-footer">		
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary saveDetails">Save Details</button>
+      </div>
+    </div>
+	</form>
+  </div>
+</div>
+
+<!-- Small modal -->
+<div class="modal fade" id="NonActiveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">	
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Are you sure to deactivate - <span class="text-info">{{tmpCname}} </span>?</h4>
+      </div>
+      <div class="modal-footer">		
+        <button type="button" class="btn btn-primary" ng-click="deactivateClient(tmpCid);" data-dismiss="modal">Confirm</button>
+      </div>
+    </div>
+	</form>
+  </div>
+</div>
+
+</div>
