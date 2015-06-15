@@ -18,7 +18,7 @@
 	<tbody ng-init="tmpCnt=0;">
 	  <tr ng-repeat="data in EmployeeData | filter:searchEmployee" class="fullData">
 		<td>{{data.Employee_id}}</td>
-		<td><a href="#/employee_details">{{data.Employee_name}}</a></td>
+		<td><a href="#/employee_details/:{{data.Employee_id}}">{{data.Employee_name}}</a></td>
 		<td>{{data.Employee_pcontact}}</td>
 		<td>{{data.Employee_city}}</td>
 		<td>{{data.Employee_emptype}}</td>

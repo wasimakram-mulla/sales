@@ -112,94 +112,42 @@ stockmgmt.controller("EmployeesListController", function($scope, $http, $route){
 	$scope.reload = function(){
 		$route.reload();
 	};
-	
-	$scope.SetCIdCname = function(cid, cnm){
-		$scope.tmpCid=cid;
-		$scope.tmpCname=cnm;
-	};
-	
-	$scope.deactivateDealer = function(cid){
+});
+
+stockmgmt.controller("EmployeeDetailsController", function($scope, $http, $route, $routeParams){
+	//alert($routeParams.param.slice(1))
+	$scope.datapresent=true;
+	$scope.initCalls = function(){
 		$http({
-			method: 'POST',
-			url: 'php/master.php?action=DeactivateDealer',
-			headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-			data:cid
-		}).
-			success(function(data, status, headers, config) {
-		}).
-		error(function(data, status, headers, config) {
-			alert('Service Error');
-		}).
-		then(function(result){
-			$scope.initCalls();
-		});
+				method: 'POST',
+				url: 'php/master.php?action=FetchEmployeeDetails',
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+				data: $routeParams.param.slice(1)
+			}).
+				success(function(data, status, headers, config) {
+			}).
+			error(function(data, status, headers, config) {
+				alert('Service Error');
+			}).
+			then(function(result){
+				$scope.datapresent=result.data.status;
+				if(result.data.status==true){
+					var empData=result.data.Employees[0];
+					$scope.ename=empData.Employee_name;
+					$scope.pcontact=empData.Employee_pcontact;
+					$scope.acontact=empData.Employee_acontact;
+					$scope.email=empData.Employee_email;
+					$scope.salperday=empData.Employee_salperday;
+					$scope.doj=empData.Employee_doj;
+					$scope.addr=empData.Employee_addr;
+					$scope.city=empData.Employee_city;
+					$scope.pincode=empData.Employee_pincode;
+					$scope.prevEmplType=empData.Employee_emptype;
+					$scope.prevEmpDesig=empData.Employee_empdesig;
+					$scope.prevEmpDept=empData.Employee_empdept;
+					$('.waitspinner').hide();					
+				}
+			});		
 	};
-	
-	$scope.editDealerDetails = function(DealerId){
-		$(".saveDetails").removeAttr('disabled');
-		$("#myModal .modal-footer").prepend('<label class="text-info">Please Wait...</label>');		
-		
-		$http({
-			method: 'POST',
-			url: 'php/master.php?action=SpecificDealerDetails',
-			headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-			data:DealerId
-		}).
-			success(function(data, status, headers, config) {
-		}).
-		error(function(data, status, headers, config) {
-			alert('Service Error');
-		}).
-		then(function(result){
-			$scope.cid=result.data.Dealer_id;
-			$scope.cname=result.data.Dealer_name;
-			$scope.addr=result.data.Dealer_addr;
-			$scope.city=result.data.Dealer_city;
-			$scope.pincode=result.data.pincode;
-			$scope.pcontact=result.data.Dealer_contact;
-			$scope.acontact=result.data.Dealer_alternate_contact;
-			$scope.email=result.data.Dealer_email;
-			$("#myModal .modal-footer label").remove();
-		});
-	};
-	
-	$scope.saveEdittedDetails = function(){		
-		var mainObj={
-			"Dealer_id": $scope.cid,
-			"Dealer_name": $scope.cname,
-			"Dealer_addr": $scope.addr,
-			"Dealer_city": $scope.city,
-			"Dealer_pin" : $scope.pincode,
-			"Dealer_pcontact": $scope.pcontact,
-			"Dealer_acontact": $scope.acontact,
-			"Dealer_email": $scope.email
-		};
-		$http({
-			method: 'POST',
-			url: 'php/master.php?action=UpdateDealerDetails',
-			headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-			data: mainObj
-		}).
-			success(function(data, status, headers, config) {
-		}).
-		error(function(data, status, headers, config) {
-			alert('Service Error');
-		}).
-		then(function(result){
-			if(result.data.status){
-				$("#myModal .modal-footer").prepend('<label class="text-success">Changes Updated...</label>');
-				$(".saveDetails").attr('disabled',"disabled");
-				setTimeout(function(){
-					$("#myModal .modal-footer label").remove();
-				},2000);
-				$scope.initCalls();
-			}
-			else{
-				$("#myModal .modal-footer").prepend('<label class="text-danger">Server Error!!! Please Update Changes Again...</label>');
-				setTimeout(function(){
-					$("#myModal .modal-footer label").remove();
-				},2000);
-			}
-		});
-	};
+	$scope.initCalls();
 });

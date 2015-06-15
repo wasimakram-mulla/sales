@@ -392,4 +392,37 @@ $action=$_GET['action'];
 		}
 		echo json_encode($obj);
 	}
+
+	if($action=='FetchEmployeeDetails'){
+		$data = json_decode(file_get_contents("php://input"));
+		$selEmployees="SELECT * FROM `employee_master` where `emp_id`=".$data;
+		$resEmployees=mysql_query($selEmployees);
+		$count = mysql_num_rows($resEmployees);
+		if($count>0){
+			$cnt=0;
+			while($row = mysql_fetch_array( $resEmployees )) {
+				$tmpRes[$cnt]->Employee_id=$row['emp_id'];
+				$tmpRes[$cnt]->Employee_name=$row['emp_name'];
+				$tmpRes[$cnt]->Employee_pcontact=$row['emp_pcontact'];
+				$tmpRes[$cnt]->Employee_acontact=$row['emp_acontact'];
+				$tmpRes[$cnt]->Employee_email=$row['emp_email'];		
+				$tmpRes[$cnt]->Employee_salperday=$row['emp_sal_per_day'];
+				$tmpRes[$cnt]->Employee_doj=$row['emp_doj'];			
+				$tmpRes[$cnt]->Employee_addr=$row['emp_address'];			
+				$tmpRes[$cnt]->Employee_city=$row['emp_city'];
+				$tmpRes[$cnt]->Employee_pincode=$row['emp_pincode'];
+				$tmpRes[$cnt]->Employee_emptype=$row['emp_type'];
+				$tmpRes[$cnt]->Employee_empdesig=$row['emp_desig'];
+				$tmpRes[$cnt]->Employee_empdept=$row['emp_dept'];
+				$cnt++;
+			}
+			$obj->status=true;
+			$obj->Employees=$tmpRes;
+		}
+		else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
+	
 ?>
