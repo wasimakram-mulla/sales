@@ -1,30 +1,106 @@
 <div class="col-md-8 col-sm-12" ng-controller="AddEmployeeController">
 	<h3 class="text-warning">Add Employee</h3>
 	<form ng-submit="saveDetails();">
-		<div class="col-md-6 col-sm-12">
-		<input type="text" class="form-control" ng-model="ename" placeholder="Name" autofocus required/><br/>		
-		<input type="number" class="form-control" ng-model="pcontact" placeholder="Primary Contact" required /><br/>
-		<input type="number" class="form-control" ng-model="acontact" placeholder="Alternate Contact (optional)" /><br/>
-		<input type="email" class="form-control" ng-model="email" placeholder="Email Id (optional)" /><br/>
-		<input type="text" class="form-control" ng-model="salperday" placeholder="Salary Per Day (INR)" /><br/>
-		<input type="date" class="form-control" ng-model="doj" placeholder="Date Of Joining" /><br/>
-		</div>
-		<div class="col-md-6 col-sm-12">
-		<textarea class="form-control" ng-model="addr" placeholder="Address" required></textarea><br/>
-		<input type="text" class="form-control" ng-model="city" placeholder="City" required /><br/>
-		<input type="number" class="form-control" ng-model="pincode" placeholder="Area Pincode" required /><br/>		
-		<select class="form-control" ng-model="emplType" required>
-			<option value="Full Time Regular">Full Time Regular</option>
-			<option value="Part Time">Part Time</option>
-			<option value="Contract">Contract</option>
-		</select><br/>
-		<select class="form-control" ng-model="designation" ng-options="designation.Desig_name for designation in desigs" required></select><br/>
+		<div class="col-md-12 col-sm-12">
 		
-		<select class="form-control" ng-model="department" ng-options="department.Dept_name for department in dept" required></select><br/>
+			<div class="col-md-12 col-sm-12">
+				<div class="col-md-3 col-sm-4"><label class="form-control label-info">Full Name</label></div>
+				<div class="col-md-6 col-sm-8"><input type="text" class="form-control" ng-model="ename" placeholder="Name" autofocus required/><br/></div>
+			</div>
+			
+			<div class="col-md-12 col-sm-12">
+				<div class="col-md-3 col-sm-4"><label class="form-control label-info">Primary Contact</label></div>
+				<div class="col-md-6 col-sm-8"><input type="number" class="form-control" ng-model="pcontact" placeholder="Primary Contact" required /><br/></div>
+			</div>
+		
+			<div class="col-md-12 col-sm-12">
+				<div class="col-md-3 col-sm-4"><label class="form-control label-info">Alternate Contact</label></div>
+				<div class="col-md-6 col-sm-8"><input type="number" class="form-control" ng-model="acontact" placeholder="Alternate Contact (optional)" /><br/></div>
+			</div>
+			
+			<div class="col-md-12 col-sm-12">
+				<div class="col-md-3 col-sm-4"><label class="form-control label-info">Email Id </label></div>
+				<div class="col-md-6 col-sm-8"><input type="email" class="form-control" ng-model="email" placeholder="Email Id (optional)" /><br/></div>
+			</div>
+			
+			<div class="col-md-12 col-sm-12">
+				<div class="col-md-3 col-sm-4"><label class="form-control label-info">Salary Per Day (INR)</label></div>
+				<div class="col-md-6 col-sm-8"><input type="text" class="form-control" ng-model="salperday" placeholder="Salary Per Day (INR)" /><br/></div>
+			</div>
+			
+			<div class="col-md-12 col-sm-12">
+				<div class="col-md-3 col-sm-4"><label class="form-control label-info">Date Of Joining</label></div>
+				<div class="col-md-6 col-sm-8">
+					<div class='input-group date' >
+						<input type='text' id='datetimepicker1' class="form-control" ng-model="salperday1" placeholder="Date of joining"/>
+						<span class="input-group-addon">
+							<span class="glyphicon glyphicon-calendar"></span>
+						</span>
+					</div>
+					<br/>
+			</div>
+			</div>
+			
+			<div class="col-md-12 col-sm-12">
+				<div class="col-md-3 col-sm-4"><label class="form-control label-info">Address</label></div>
+				<div class="col-md-6 col-sm-8"><textarea class="form-control" ng-model="addr" placeholder="Address" required></textarea><br/></div>
+			</div>
+			
+			<div class="col-md-12 col-sm-12">
+				<div class="col-md-3 col-sm-4"><label class="form-control label-info">City</label></div>
+				<div class="col-md-6 col-sm-8"><input type="text" class="form-control" ng-model="city" placeholder="City" required /><br/></div>
+			</div>
+			
+			<div class="col-md-12 col-sm-12">
+				<div class="col-md-3 col-sm-4"><label class="form-control label-info">Pincode</label></div>
+				<div class="col-md-6 col-sm-8"><input type="number" class="form-control" ng-model="pincode" placeholder="Area Pincode" required /><br/>	</div>
+			</div>
+			
+			<div class="col-md-12 col-sm-12">
+				<div class="col-md-3 col-sm-4"><label class="form-control label-info">Employment Type</label></div>
+				<div class="col-md-6 col-sm-8">
+					<select class="form-control" ng-model="emplType" required>
+						<option value="Full Time Regular">Full Time Regular</option>
+						<option value="Part Time">Part Time</option>
+						<option value="Contract">Contract</option>
+					</select><br/>
+				</div>
+			</div>
+			
+			<div class="col-md-12 col-sm-12">
+				<div class="col-md-3 col-sm-4"><label class="form-control label-info">Desgination</label></div>
+				<div class="col-md-6 col-sm-8">
+					<select class="form-control" ng-model="designation" required>
+						<option ng-repeat="designation in desigs">{{designation.Desig_name}}</option>
+					</select><br/>
+				</div>
+			</div>
+			
+			<div class="col-md-12 col-sm-12">
+				<div class="col-md-3 col-sm-4"><label class="form-control label-info">Department</label></div>
+				<div class="col-md-6 col-sm-8">
+					<select class="form-control" ng-model="department" required>
+						<option ng-repeat="department in dept">{{department.Dept_name}}</option>
+					</select>
+				</div>
+			</div>
 		</div>	
 		
-		<div class="waitspinner"><label class="text-info">Please Wait...</label><i class="fa fa-spinner fa-pulse fa-lg text-info"></i></div><br/>
-		<button type="submit" class="btn btn-success">Save Details</button>
-		<button type="reset" class="btn btn-info">Reset</button>
+		<div class="col-md-12 col-sm-12">		
+			<div class="col-md-12 col-sm-12">
+				<div class="waitspinner"><label class="text-info">Please Wait...</label><i class="fa fa-spinner fa-pulse fa-lg text-info"></i></div><br/>
+				<button type="submit" class="btn btn-success">Save Details</button>
+				<button type="reset" class="btn btn-info">Reset</button>
+			</div>
+		</div>	
 	</form>
 </div>
+<script type="text/javascript">
+  $(function() {	
+    $('#datetimepicker1').datetimepicker({
+		format: 'MM/DD/YYYY',
+		maxDate:new Date()
+	});
+  });
+  //DTP from: http://eonasdan.github.io/bootstrap-datetimepicker/
+</script>

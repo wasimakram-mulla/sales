@@ -1,0 +1,36 @@
+<div class="col-md-11 col-sm-12" ng-controller="EmployeesListController">
+
+<h3 class="text-warning">Dealers Details <span style="float:right" class="refreshIcon"><i class="fa fa-refresh text-info" title="Refresh Data" ng-click="reload();"></i></span></h3>
+
+<label>Search Dealer: </label> <input type="text" ng-model="searchEmployee" class="searchEmployee"/><br/><br/>
+<table class="table table-bordered">
+	<thead>
+	  <tr>
+		<th>Id</th>
+		<th>Name</th>
+		<th>Primary Contact</th>
+		<th>City</th>
+		<th>Employee Type</th>
+		<th>Designation</th>
+		<th>Department</th>
+	  </tr>
+	</thead>
+	<tbody ng-init="tmpCnt=0;">
+	  <tr ng-repeat="data in EmployeeData | filter:searchEmployee" class="fullData">
+		<td>{{data.Employee_id}}</td>
+		<td><a href="#/employee_details">{{data.Employee_name}}</a></td>
+		<td>{{data.Employee_pcontact}}</td>
+		<td>{{data.Employee_city}}</td>
+		<td>{{data.Employee_emptype}}</td>
+		<td>{{data.Employee_empdesig}}</td>
+		<td>{{data.Employee_empdept}}</td>
+	  </tr>
+	  <tr class="noData">
+		<td colspan="8"> No Data Found </td>
+	  </tr>
+	  <tr class="loadData">
+		<td colspan="8"> Please Wait... <i class="fa fa-spinner fa-pulse fa-lg text-info"></i></td>
+	  </tr>
+	</tbody>
+</table>
+</div>

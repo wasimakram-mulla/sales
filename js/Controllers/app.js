@@ -40,6 +40,9 @@ stockmgmt.config(['$routeProvider','$resourceProvider',
       when('/add_employee', {
         templateUrl: 'views/add_employee.html'
       }).
+      when('/employee_list', {
+        templateUrl: 'views/employee_list.html'
+      }).
       otherwise({
         redirectTo: '/dashboard'
       });

@@ -367,4 +367,29 @@ $action=$_GET['action'];
 		}
 		echo json_encode($obj);
 	}
+	
+	if($action=='AllEmployees'){
+		$selEmployees="SELECT * FROM `employee_master`";
+		$resEmployees=mysql_query($selEmployees);
+		$count = mysql_num_rows($resEmployees);
+		if($count>0){
+			$cnt=0;
+			while($row = mysql_fetch_array( $resEmployees )) {
+				$tmpRes[$cnt]->Employee_id=$row['emp_id'];
+				$tmpRes[$cnt]->Employee_name=$row['emp_name'];
+				$tmpRes[$cnt]->Employee_pcontact=$row['emp_pcontact'];
+				$tmpRes[$cnt]->Employee_city=$row['emp_city'];				
+				$tmpRes[$cnt]->Employee_emptype=$row['emp_type'];
+				$tmpRes[$cnt]->Employee_empdesig=$row['emp_desig'];
+				$tmpRes[$cnt]->Employee_empdept=$row['emp_dept'];
+				$cnt++;
+			}
+			$obj->status=true;
+			$obj->Employees=$tmpRes;
+		}
+		else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
 ?>
