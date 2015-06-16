@@ -146,6 +146,7 @@ stockmgmt.controller("EmployeeDetailsController", function($scope, $http, $route
 					$scope.prevEmplType=empData.Employee_emptype;
 					$scope.prevEmpDesig=empData.Employee_empdesig;
 					$scope.prevEmpDept=empData.Employee_empdept;
+					$scope.prevEmpStatus=empData.Employee_empstatus;
 					$('.waitspinner').hide();					
 				}
 			});
@@ -195,6 +196,7 @@ stockmgmt.controller("EmployeeDetailsController", function($scope, $http, $route
 		var tmpEmpType=$scope.prevEmplType;
 		var tmpEmpDesig=$scope.prevEmpDesig;
 		var tmpEmpDept=$scope.prevEmpDept;
+		var tmpEmpStatus=$scope.prevEmpStatus;
 		
 		if($scope.emplType != undefined){
 			tmpEmpType=$scope.emplType;
@@ -204,6 +206,9 @@ stockmgmt.controller("EmployeeDetailsController", function($scope, $http, $route
 		}
 		if($scope.department != undefined){
 			tmpEmpDept=$scope.department;
+		}
+		if($scope.emp_status != undefined){
+			tmpEmpStatus=$scope.emp_status;
 		}
 		$("button").attr("disabled","disabled");
 		//alert(tmpEmpType + " -*- " + tmpEmpDesig + " -*- " + tmpEmpDept);
@@ -219,7 +224,8 @@ stockmgmt.controller("EmployeeDetailsController", function($scope, $http, $route
 			"emp_email": $scope.email,
 			"emp_emplType": tmpEmpType,
 			"emp_designation": tmpEmpDesig,
-			"emp_department": tmpEmpDept		
+			"emp_department": tmpEmpDept,		
+			"emp_status": tmpEmpStatus		
 		};		
 		$http({
 				method: 'POST',
@@ -250,5 +256,38 @@ stockmgmt.controller("EmployeeDetailsController", function($scope, $http, $route
 					$(".waitspinner").hide();
 				}
 		});
+	};
+});
+
+stockmgmt.controller("InactiveEmployeesListController", function($scope, $http, $route){
+	$scope.initCalls = function(){
+		$(".noData").hide();
+		$(".fullData").hide();
+		$(".loadData").show();
+		$http({
+				method: 'POST',
+				url: 'php/master.php?action=AllInactiveEmployees',
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'},			
+			}).
+				success(function(data, status, headers, config) {
+			}).
+			error(function(data, status, headers, config) {
+				alert('Service Error');
+			}).
+			then(function(result){
+				if(result.data.status){
+					$scope.EmployeeData=result.data.Employees;					
+					$(".fullData").show();
+				}
+				else{
+					$(".noData").show();
+				}
+					$(".loadData").hide();
+			});
+	};
+	$scope.initCalls();
+	
+	$scope.reload = function(){
+		$route.reload();
 	};
 });

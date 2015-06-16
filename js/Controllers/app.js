@@ -46,6 +46,9 @@ stockmgmt.config(['$routeProvider','$resourceProvider',
       when('/employee_details/:param', {
         templateUrl: 'views/employee_details.html'
       }).
+      when('/inactive_employees', {
+        templateUrl: 'views/employees_list_inactive.html'
+      }).
       when('/log_attendance', {
         templateUrl: 'views/log_attendance.html'
       }).
