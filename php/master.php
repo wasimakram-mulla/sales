@@ -358,7 +358,7 @@ $action=$_GET['action'];
 	/* Employee Details */
 	if($action=='AddEmployee'){
 		$data = json_decode(file_get_contents("php://input"));
-		$insEmplDetails ="INSERT INTO `employee_master`(`emp_name`, `emp_address`, `emp_city`, `emp_pincode`, `emp_pcontact`, `emp_acontact`, `emp_email`, `emp_dept`, `emp_desig`, `emp_type`, `emp_sal_per_day`, `emp_doj`) VALUES ('".$data->emp_name."','".$data->emp_addr."','".$data->emp_city."',".$data->emp_pincode.",".$data->emp_pcontact.",".$data->emp_acontact.",'".$data->emp_email."','".$data->emp_department."','".$data->emp_designation."','".$data->emp_emplType."','".$data->emp_salperday."','".$data->emp_doj."')";
+		$insEmplDetails ="INSERT INTO `employee_master`(`emp_name`, `emp_address`, `emp_city`, `emp_pincode`, `emp_pcontact`, `emp_acontact`, `emp_email`, `emp_dept`, `emp_desig`, `emp_type`, `emp_sal_per_day`, `emp_doj`, `emp_status`) VALUES ('".$data->emp_name."','".$data->emp_addr."','".$data->emp_city."',".$data->emp_pincode.",".$data->emp_pcontact.",".$data->emp_acontact.",'".$data->emp_email."','".$data->emp_department."','".$data->emp_designation."','".$data->emp_emplType."','".$data->emp_salperday."','".$data->emp_doj."','active')";
 		$resultaddQry=mysql_query($insEmplDetails);
 		if($resultaddQry){
 			$obj->status=true;
@@ -369,7 +369,32 @@ $action=$_GET['action'];
 	}
 	
 	if($action=='AllEmployees'){
-		$selEmployees="SELECT * FROM `employee_master`";
+		$selEmployees="SELECT * FROM `employee_master` where `emp_status`='active'";
+		$resEmployees=mysql_query($selEmployees);
+		$count = mysql_num_rows($resEmployees);
+		if($count>0){
+			$cnt=0;
+			while($row = mysql_fetch_array( $resEmployees )) {
+				$tmpRes[$cnt]->Employee_id=$row['emp_id'];
+				$tmpRes[$cnt]->Employee_name=$row['emp_name'];
+				$tmpRes[$cnt]->Employee_pcontact=$row['emp_pcontact'];
+				$tmpRes[$cnt]->Employee_city=$row['emp_city'];				
+				$tmpRes[$cnt]->Employee_emptype=$row['emp_type'];
+				$tmpRes[$cnt]->Employee_empdesig=$row['emp_desig'];
+				$tmpRes[$cnt]->Employee_empdept=$row['emp_dept'];
+				$cnt++;
+			}
+			$obj->status=true;
+			$obj->Employees=$tmpRes;
+		}
+		else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
+	
+	if($action=='AllInactiveEmployees'){
+		$selEmployees="SELECT * FROM `employee_master` where `emp_status`='inactive'";
 		$resEmployees=mysql_query($selEmployees);
 		$count = mysql_num_rows($resEmployees);
 		if($count>0){
@@ -414,6 +439,7 @@ $action=$_GET['action'];
 				$tmpRes[$cnt]->Employee_emptype=$row['emp_type'];
 				$tmpRes[$cnt]->Employee_empdesig=$row['emp_desig'];
 				$tmpRes[$cnt]->Employee_empdept=$row['emp_dept'];
+				$tmpRes[$cnt]->Employee_empstatus=$row['emp_status'];
 				$cnt++;
 			}
 			$obj->status=true;
@@ -427,7 +453,7 @@ $action=$_GET['action'];
 	
 	if($action=='UpdateEmployee'){
 		$data = json_decode(file_get_contents("php://input"));
-		$UpdtEmplDetails ="UPDATE `employee_master` SET `emp_name`='".$data->emp_name."',`emp_address`='".$data->emp_addr."',`emp_city`='".$data->emp_city."',`emp_pincode`=".$data->emp_pincode.",`emp_pcontact`=".$data->emp_pcontact.",`emp_acontact`=".$data->emp_acontact.",`emp_email`='".$data->emp_email."',`emp_dept`='".$data->emp_department."',`emp_desig`='".$data->emp_designation."',`emp_type`='".$data->emp_emplType."',`emp_sal_per_day`='".$data->emp_salperday."' WHERE `emp_id`=".$data->emp_id;
+		$UpdtEmplDetails ="UPDATE `employee_master` SET `emp_name`='".$data->emp_name."',`emp_address`='".$data->emp_addr."',`emp_city`='".$data->emp_city."',`emp_pincode`=".$data->emp_pincode.",`emp_pcontact`=".$data->emp_pcontact.",`emp_acontact`=".$data->emp_acontact.",`emp_email`='".$data->emp_email."',`emp_dept`='".$data->emp_department."',`emp_desig`='".$data->emp_designation."',`emp_type`='".$data->emp_emplType."',`emp_sal_per_day`='".$data->emp_salperday."', `emp_status`='".$data->emp_status."' WHERE `emp_id`=".$data->emp_id;
 		$resultupdtQry=mysql_query($UpdtEmplDetails);
 		if($resultupdtQry){
 			$obj->status=true;
@@ -437,4 +463,48 @@ $action=$_GET['action'];
 		echo json_encode($obj);
 	}
 	
+	/* Attendance API's */
+	if($action=='checkAttendanceDate'){
+		$selLogin="SELECT max(`login_date`) FROM `attendance_register`";
+		$resLogin=mysql_query($selLogin);
+		$rowLogin = mysql_fetch_array($resLogin,MYSQL_BOTH);
+		if($resLogin){
+			echo $rowLogin['max(`login_date`)'];
+		}
+		else{
+			echo "No Data";
+		}
+	}
+	
+	if($action=='startAttendance'){
+		/* $insLogin="INSERT INTO `attendance_register` (`emp_id`) SELECT `emp_id` FROM `employee_master` where `emp_status`='active'"; */
+		$tmpDate=date('U')*1000;		
+		$insLogin="INSERT INTO `attendance_register` (`emp_id`, `login_date`) SELECT `emp_id`, '".$tmpDate."' FROM `employee_master`  where `emp_status`='active'";
+		$resLogin=mysql_query($insLogin);
+		
+		$selEmployees="SELECT * FROM `employee_master` where `emp_status`='active'";
+		$resEmployees=mysql_query($selEmployees);
+		$cnt=0;
+		while($row = mysql_fetch_array( $resEmployees )) {
+			$tmpRes[$cnt]->Employee_id=$row['emp_id'];
+			$tmpRes[$cnt]->Employee_name=$row['emp_name'];
+			$tmpRes[$cnt]->Employee_pcontact=$row['emp_pcontact'];
+			$tmpRes[$cnt]->Employee_city=$row['emp_city'];				
+			$tmpRes[$cnt]->Employee_emptype=$row['emp_type'];
+			$tmpRes[$cnt]->Employee_empdesig=$row['emp_desig'];
+			$tmpRes[$cnt]->Employee_empdept=$row['emp_dept'];
+			$cnt++;
+		}			
+			$obj->Employees=$tmpRes;
+		
+		
+		if($resLogin){
+			$obj->status=true;
+		}else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
+	//Join Query for Attendance - Replacement for AllEmployees in AttendanceController.js
+	//SELECT attendance_register.*, employee_master.* FROM attendance_register, employee_master WHERE attendance_register.emp_id = employee_master.emp_id;
 ?>

@@ -1,29 +1,29 @@
-<div class="col-md-11 col-sm-12" ng-controller="EmployeesListController">
+<div class="col-md-11 col-sm-12" ng-controller="AttendanceRegController">
 
-<h3 class="text-warning">Employee Details <span style="float:right" class="refreshIcon"><i class="fa fa-refresh text-info" title="Refresh Data" ng-click="reload();"></i></span></h3>
+<h3 class="text-warning">Attendance for <span class="text-success">{{today | date:"dd MMMM, yyyy"}}</span><span style="float:right" class="refreshIcon"><i class="fa fa-refresh text-info" title="Refresh Data" ng-click="reload();"></i></span></h3>
 
+<div class="container" ng-show="showStartBtn">
+	<br/>
+	<button type="button" id="startAttendance" class="btn btn-lg btn-info" ng-click="startAttendance();">Start Attendance</button>
+</div>
+
+<div class="container" ng-hide="showStartBtn">
 <label>Search Employee: </label> <input type="text" ng-model="searchEmployee" class="searchEmployee"/><br/><br/>
 <table class="table table-bordered">
 	<thead>
 	  <tr>
 		<th>Emp Id</th>
 		<th>Name</th>
-		<th>Primary Contact</th>
-		<th>City</th>
-		<th>Employee Type</th>
-		<th>Designation</th>
 		<th>Department</th>
+		<th>Login</th>
 	  </tr>
 	</thead>
 	<tbody ng-init="tmpCnt=0;">
 	  <tr ng-repeat="data in EmployeeData | filter:searchEmployee" class="fullData">
 		<td>{{data.Employee_id}}</td>
 		<td><a href="#/employee_details/:{{data.Employee_id}}">{{data.Employee_name}}</a></td>
-		<td>{{data.Employee_pcontact}}</td>
-		<td>{{data.Employee_city}}</td>
-		<td>{{data.Employee_emptype}}</td>
-		<td>{{data.Employee_empdesig}}</td>
 		<td>{{data.Employee_empdept}}</td>
+		<td><button type="button" class="btn btn-xs btn-warning">Login</button></td>
 	  </tr>
 	  <tr class="noData">
 		<td colspan="8"> No Data Found </td>
@@ -33,4 +33,5 @@
 	  </tr>
 	</tbody>
 </table>
+</div>
 </div>
