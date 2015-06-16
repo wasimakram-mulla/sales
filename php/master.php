@@ -465,11 +465,11 @@ $action=$_GET['action'];
 	
 	/* Attendance API's */
 	if($action=='checkAttendanceDate'){
-		$selLogin="SELECT max(`login_date`) FROM `attendance_register`";
+		$selLogin="SELECT max(`record_date`) FROM `attendance_register`";
 		$resLogin=mysql_query($selLogin);
 		$rowLogin = mysql_fetch_array($resLogin,MYSQL_BOTH);
 		if($resLogin){
-			echo $rowLogin['max(`login_date`)'];
+			echo $rowLogin['max(`record_date`)'];
 		}
 		else{
 			echo "No Data";
@@ -479,7 +479,7 @@ $action=$_GET['action'];
 	if($action=='startAttendance'){
 		/* $insLogin="INSERT INTO `attendance_register` (`emp_id`) SELECT `emp_id` FROM `employee_master` where `emp_status`='active'"; */
 		$tmpDate=date('U')*1000;		
-		$insLogin="INSERT INTO `attendance_register` (`emp_id`, `login_date`) SELECT `emp_id`, '".$tmpDate."' FROM `employee_master`  where `emp_status`='active'";
+		$insLogin="INSERT INTO `attendance_register` (`emp_id`, `record_date`) SELECT `emp_id`, '".$tmpDate."' FROM `employee_master`  where `emp_status`='active'";
 		$resLogin=mysql_query($insLogin);
 		
 		$selEmployees="SELECT * FROM `employee_master` where `emp_status`='active'";
@@ -507,4 +507,35 @@ $action=$_GET['action'];
 	}
 	//Join Query for Attendance - Replacement for AllEmployees in AttendanceController.js
 	//SELECT attendance_register.*, employee_master.* FROM attendance_register, employee_master WHERE attendance_register.emp_id = employee_master.emp_id;
+	if($action=='AttendanceEmployees'){
+		$selLogin="SELECT max(`record_date`) FROM `attendance_register`";
+		$resLogin=mysql_query($selLogin);
+		$rowLogin = mysql_fetch_array($resLogin,MYSQL_BOTH);
+		$tmpMaxRec= $rowLogin['max(`record_date`)'];
+		
+		
+		$selEmployees="SELECT attendance_register.*, employee_master.* FROM attendance_register, employee_master WHERE attendance_register.emp_id = employee_master.emp_id and `record_date`='".$tmpMaxRec."'";
+		$resEmployees=mysql_query($selEmployees);
+		$count = mysql_num_rows($resEmployees);
+		if($count>0){
+			$cnt=0;
+			while($row = mysql_fetch_array( $resEmployees )) {
+				$tmpRes[$cnt]->Employee_id=$row['emp_id'];
+				$tmpRes[$cnt]->Employee_name=$row['emp_name'];
+				$tmpRes[$cnt]->Employee_pcontact=$row['emp_pcontact'];
+				$tmpRes[$cnt]->Employee_city=$row['emp_city'];				
+				$tmpRes[$cnt]->Employee_emptype=$row['emp_type'];
+				$tmpRes[$cnt]->Employee_empdesig=$row['emp_desig'];
+				$tmpRes[$cnt]->Employee_empdept=$row['emp_dept'];
+				$tmpRes[$cnt]->Employee_loginStatus=$row['login_status'];
+				$cnt++;
+			}
+			$obj->status=true;
+			$obj->Employees=$tmpRes;
+		}
+		else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
 ?>

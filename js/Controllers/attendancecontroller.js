@@ -72,7 +72,7 @@ stockmgmt.controller("AttendanceRegController", function($scope, $http, $route){
 	$scope.loadEmployeesData = function(){
 		$http({
 				method: 'POST',
-				url: 'php/master.php?action=AllEmployees',
+				url: 'php/master.php?action=AttendanceEmployees',
 				headers: {'Content-Type': 'application/x-www-form-urlencoded'}				
 			}).
 				success(function(data, status, headers, config) {
