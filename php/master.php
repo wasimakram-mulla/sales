@@ -463,4 +463,48 @@ $action=$_GET['action'];
 		echo json_encode($obj);
 	}
 	
+	/* Attendance API's */
+	if($action=='checkAttendanceDate'){
+		$selLogin="SELECT max(`login_date`) FROM `attendance_register`";
+		$resLogin=mysql_query($selLogin);
+		$rowLogin = mysql_fetch_array($resLogin,MYSQL_BOTH);
+		if($resLogin){
+			echo $rowLogin['max(`login_date`)'];
+		}
+		else{
+			echo "No Data";
+		}
+	}
+	
+	if($action=='startAttendance'){
+		/* $insLogin="INSERT INTO `attendance_register` (`emp_id`) SELECT `emp_id` FROM `employee_master` where `emp_status`='active'"; */
+		$tmpDate=date('U')*1000;		
+		$insLogin="INSERT INTO `attendance_register` (`emp_id`, `login_date`) SELECT `emp_id`, '".$tmpDate."' FROM `employee_master`  where `emp_status`='active'";
+		$resLogin=mysql_query($insLogin);
+		
+		$selEmployees="SELECT * FROM `employee_master` where `emp_status`='active'";
+		$resEmployees=mysql_query($selEmployees);
+		$cnt=0;
+		while($row = mysql_fetch_array( $resEmployees )) {
+			$tmpRes[$cnt]->Employee_id=$row['emp_id'];
+			$tmpRes[$cnt]->Employee_name=$row['emp_name'];
+			$tmpRes[$cnt]->Employee_pcontact=$row['emp_pcontact'];
+			$tmpRes[$cnt]->Employee_city=$row['emp_city'];				
+			$tmpRes[$cnt]->Employee_emptype=$row['emp_type'];
+			$tmpRes[$cnt]->Employee_empdesig=$row['emp_desig'];
+			$tmpRes[$cnt]->Employee_empdept=$row['emp_dept'];
+			$cnt++;
+		}			
+			$obj->Employees=$tmpRes;
+		
+		
+		if($resLogin){
+			$obj->status=true;
+		}else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
+	//Join Query for Attendance - Replacement for AllEmployees in AttendanceController.js
+	//SELECT attendance_register.*, employee_master.* FROM attendance_register, employee_master WHERE attendance_register.emp_id = employee_master.emp_id;
 ?>
