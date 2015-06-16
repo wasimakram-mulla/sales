@@ -425,4 +425,16 @@ $action=$_GET['action'];
 		echo json_encode($obj);
 	}
 	
+	if($action=='UpdateEmployee'){
+		$data = json_decode(file_get_contents("php://input"));
+		$UpdtEmplDetails ="UPDATE `employee_master` SET `emp_name`='".$data->emp_name."',`emp_address`='".$data->emp_addr."',`emp_city`='".$data->emp_city."',`emp_pincode`=".$data->emp_pincode.",`emp_pcontact`=".$data->emp_pcontact.",`emp_acontact`=".$data->emp_acontact.",`emp_email`='".$data->emp_email."',`emp_dept`='".$data->emp_department."',`emp_desig`='".$data->emp_designation."',`emp_type`='".$data->emp_emplType."',`emp_sal_per_day`='".$data->emp_salperday."' WHERE `emp_id`=".$data->emp_id;
+		$resultupdtQry=mysql_query($UpdtEmplDetails);
+		if($resultupdtQry){
+			$obj->status=true;
+		}else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
+	
 ?>

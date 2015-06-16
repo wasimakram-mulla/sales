@@ -118,6 +118,7 @@ stockmgmt.controller("EmployeeDetailsController", function($scope, $http, $route
 	//alert($routeParams.param.slice(1))
 	$scope.datapresent=true;
 	$scope.initCalls = function(){
+		$('.waitspinner').show();
 		$http({
 				method: 'POST',
 				url: 'php/master.php?action=FetchEmployeeDetails',
@@ -147,7 +148,107 @@ stockmgmt.controller("EmployeeDetailsController", function($scope, $http, $route
 					$scope.prevEmpDept=empData.Employee_empdept;
 					$('.waitspinner').hide();					
 				}
-			});		
+			});
+			
+			$scope.getDesignations = function(){
+				$http({
+					method: 'POST',
+					url: 'php/master.php?action=getDesignations',
+					headers: {'Content-Type': 'application/x-www-form-urlencoded'}			
+				}).
+					success(function(data, status, headers, config) {
+				}).
+				error(function(data, status, headers, config) {
+					alert('Service Error');
+				}).
+				then(function(result){
+					if(result.data){
+						$scope.desigs=result.data.Desigs;
+					}
+				});
+			};
+			$scope.getDesignations();
+	
+		$scope.getDepartment = function(){
+			$http({
+				method: 'POST',
+				url: 'php/master.php?action=getDepartment',
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}			
+			}).
+				success(function(data, status, headers, config) {
+			}).
+			error(function(data, status, headers, config) {
+				alert('Service Error');
+			}).
+			then(function(result){
+				if(result.data){
+					$scope.dept=result.data.Dept;				
+				}
+			});
+		};
+		$scope.getDepartment();
 	};
 	$scope.initCalls();
+	
+	$scope.updtDetails = function(){
+		$(".waitspinner").show();
+		var tmpEmpType=$scope.prevEmplType;
+		var tmpEmpDesig=$scope.prevEmpDesig;
+		var tmpEmpDept=$scope.prevEmpDept;
+		
+		if($scope.emplType != undefined){
+			tmpEmpType=$scope.emplType;
+		}
+		if($scope.designation != undefined){
+			tmpEmpDesig=$scope.designation;
+		}
+		if($scope.department != undefined){
+			tmpEmpDept=$scope.department;
+		}
+		$("button").attr("disabled","disabled");
+		//alert(tmpEmpType + " -*- " + tmpEmpDesig + " -*- " + tmpEmpDept);
+		var mainObj={
+			"emp_id": $routeParams.param.slice(1),
+			"emp_name": $scope.ename,
+			"emp_addr": $scope.addr,
+			"emp_city": $scope.city,
+			"emp_pincode" : $scope.pincode,
+			"emp_pcontact": $scope.pcontact,
+			"emp_acontact": $scope.acontact,
+			"emp_salperday": $scope.salperday,
+			"emp_email": $scope.email,
+			"emp_emplType": tmpEmpType,
+			"emp_designation": tmpEmpDesig,
+			"emp_department": tmpEmpDept		
+		};		
+		$http({
+				method: 'POST',
+				url: 'php/master.php?action=UpdateEmployee',
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+				data: mainObj
+			}).
+				success(function(data, status, headers, config) {
+			}).
+			error(function(data, status, headers, config) {
+				alert('Service Error');
+			}).
+			then(function(result){
+				console.log(result.data.status);
+				if(result.data.status){
+					$("form").prepend("<span class='text-success'>Updated Employee</span>");
+					$(".waitspinner").hide();
+					setTimeout(function(){
+						$("form span").fadeOut();
+						$("form span").remove();
+						$("button").removeAttr("disabled");						
+						$route.reload();
+					},2000);
+				}
+				else{
+					alert('Record cannot be updated please check.');
+					$("button").removeAttr("disabled");
+					$(".waitspinner").hide();
+				}
+		});
+	};
 });
