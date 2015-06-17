@@ -1,6 +1,6 @@
 stockmgmt.controller("AttendanceRegController", function($scope, $http, $route){
 	$scope.today=new Date();
-	$scope.showStartBtn=true;
+	$scope.showStartBtn=false;
 	$scope.initCalls = function(){
 		$(".noData").hide();
 		$(".fullData").hide();
@@ -91,6 +91,98 @@ stockmgmt.controller("AttendanceRegController", function($scope, $http, $route){
 					alert('Service Error!!!');
 				}
 				$(".loadData").hide();
+		});
+	};
+	
+	$scope.singleLogAttendance = function(eId){
+		var dt= new Date();
+		var dateObj={
+			"logId":eId,
+			"Dt":dt.getDate(),
+			"Mnt": dt.getMonth(),
+			"Yr":dt.getFullYear(),
+			"InTime":dt.getTime()
+		};
+		$http({
+				method: 'POST',
+				url: 'php/master.php?action=LogSingleAttendance',
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+				data: dateObj
+			}).
+				success(function(data, status, headers, config) {
+			}).
+			error(function(data, status, headers, config) {
+				alert('Service Error');
+			}).
+			then(function(result){	
+				$route.reload();
+			});
+	};
+	
+	$scope.singleLogoutAttendance = function(eId){
+		var dt= new Date();
+		var dateObj={
+			"logId":eId,
+			"OutTime":dt.getTime()
+		};
+		$http({
+				method: 'POST',
+				url: 'php/master.php?action=LogOutSingleAttendance',
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+				data: dateObj
+			}).
+				success(function(data, status, headers, config) {
+			}).
+			error(function(data, status, headers, config) {
+				alert('Service Error');
+			}).
+			then(function(result){	
+				$route.reload();
+			});
+	};
+	
+	$scope.AllUserLogin = function(){
+		var dt= new Date();
+		var dateObj={			
+			"Dt":dt.getDate(),
+			"Mnt": dt.getMonth(),
+			"Yr":dt.getFullYear(),
+			"InTime":dt.getTime()
+		};
+		$http({
+				method: 'POST',
+				url: 'php/master.php?action=AllUserLogin',
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+				data: dateObj
+			}).
+				success(function(data, status, headers, config) {
+			}).
+			error(function(data, status, headers, config) {
+				alert('Service Error');
+			}).
+			then(function(result){	
+				$route.reload();
+			});
+	};
+	
+	$scope.AllUserLogout = function(){
+		var dt= new Date();
+		var dateObj={
+			"OutTime":dt.getTime()
+		};
+		$http({
+				method: 'POST',
+				url: 'php/master.php?action=AllUserLogOut',
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+				data: dateObj
+			}).
+				success(function(data, status, headers, config) {
+			}).
+			error(function(data, status, headers, config) {
+				alert('Service Error');
+			}).
+			then(function(result){	
+				$route.reload();
 			});
 	};
 	
