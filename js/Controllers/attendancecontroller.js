@@ -99,7 +99,7 @@ stockmgmt.controller("AttendanceRegController", function($scope, $http, $route){
 		var dateObj={
 			"logId":eId,
 			"Dt":dt.getDate(),
-			"Mnt": dt.getMonth(),
+			"Mnt": dt.getMonth()+1,
 			"Yr":dt.getFullYear(),
 			"InTime":dt.getTime()
 		};
@@ -145,7 +145,7 @@ stockmgmt.controller("AttendanceRegController", function($scope, $http, $route){
 		var dt= new Date();
 		var dateObj={			
 			"Dt":dt.getDate(),
-			"Mnt": dt.getMonth(),
+			"Mnt": dt.getMonth()+1,
 			"Yr":dt.getFullYear(),
 			"InTime":dt.getTime()
 		};
@@ -189,4 +189,63 @@ stockmgmt.controller("AttendanceRegController", function($scope, $http, $route){
 	$scope.reload = function(){
 		$route.reload();
 	};
+});
+
+stockmgmt.controller("PrevAttendanceController", function($scope, $http, $route){
+	$scope.filterAllTable=false;
+	$scope.filterAll = function(){
+		
+		//console.log($('#fromdtp').val())
+		var frmVal=$('#fromdtp').val().split('/');
+		var toVal=$('#todtp').val().split('/');
+		var dateObjs={
+			"frmDt":frmVal[1],
+			"frmMnt":frmVal[0],
+			"frmYr":frmVal[2],
+			"toDt":toVal[1],
+			"toMnt":toVal[0],
+			"toYr":toVal[2]
+		};
+		
+		$scope.filterAllTable=true;
+		$(".noData").hide();
+		$(".fullData").hide();
+		$(".loadData").show();
+		$http({
+				method: 'POST',
+				url: 'php/master.php?action=FilterAllRecords',
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'},	
+				data:dateObjs
+			}).
+				success(function(data, status, headers, config) {
+			}).
+			error(function(data, status, headers, config) {
+				alert('Service Error');
+			}).
+			then(function(result){
+				console.log(result.data)
+				if(result.data.status){
+					//$scope.EmployeeData=result.data.Employees;
+					var Empl=result.data.Employees;
+					for(var i=0;i<Empl.length;i++){
+						var cnt=1;
+						for(var j=i+1;j<Empl.length;j++){
+							if(Empl[i].Employee_id==Empl[j].Employee_id){
+								cnt++;
+								Empl.splice(j,1);
+								j--;
+							}
+						}
+						Empl[i].noOfDaysPresent=cnt;
+					}
+					$scope.EmployeeData=Empl;
+					console.log($scope.EmployeeData);
+					$(".fullData").show();
+				}
+				else{
+					$(".noData").show();
+				}
+					$(".loadData").hide();
+			});
+	};	
 });

@@ -1,0 +1,99 @@
+<div class="col-md-11 col-sm-12" ng-controller="PrevAttendanceController">
+<h3 class="text-warning">Previous Records of Attendance</h3>	
+	<ul role="tablist" class="nav nav-tabs" ng-init="tab=1">
+        <li ng-class="{'active':tab==1}" role="presentation"><a ng-click="tab=1;">Track All Records</a></li>
+        <li ng-class="{'active':tab==2}" role="presentation"><a ng-click="tab=2;">Track Specific Employee</a></li>        
+	</ul>
+	<br/>
+	
+	<!-- This is First Panel -->
+	<div class="col-md-12 col-sm-12" ng-show="tab==1">
+		<form ng-submit="filterAll();">
+		<div class="col-md-3 col-sm-5">
+			<label class="text-info">From Date: </label> 
+			<div class='input-group date' >
+				<input type='text' id='fromdtp' class="form-control" ng-model="salperday1" placeholder="From Date" required />
+				<span class="input-group-addon">
+					<span class="glyphicon glyphicon-calendar"></span>
+				</span>
+			</div>
+		</div>
+		
+		<div class="col-md-3 col-sm-5">
+			<label class="text-info">To Date: </label> 
+			<div class='input-group date' >
+				<input type='text' id='todtp' class="form-control" ng-model="salperday1" placeholder="To Date" required/>
+				<span class="input-group-addon">
+					<span class="glyphicon glyphicon-calendar"></span>
+				</span>
+			</div>
+		</div>
+		
+		<div class="col-md-3 col-sm-2">
+			<br/>
+			<button class="btn btn-primary">Filter</button>
+		</div>
+		</form>
+			<div class="col-md-11 col-sm-12" ng-show="filterAllTable">
+				<br/>
+				<label>Search Employee: </label> <input type="text" ng-model="searchEmployee" class="searchEmployee"/><br/><br/>
+				<table class="table table-bordered">
+					<thead>
+					  <tr>
+						<th>Emp Id</th>
+						<th>Name</th>
+						<th>Primary Contact</th>
+						<th>Designation</th>
+						<th>No. of Days Present</th>
+					  </tr>
+					</thead>
+					<tbody ng-init="tmpCnt=0;">
+					  <tr ng-repeat="data in EmployeeData | filter:searchEmployee" class="fullData">
+						<td>{{data.Employee_id}}</td>
+						<td>{{data.Employee_name}}</td>
+						<td>{{data.Employee_pcontact}}</td>
+						<td>{{data.Employee_empdesig}}</td>
+						<td>{{data.noOfDaysPresent}}</td>
+					  </tr>
+					  <tr class="noData">
+						<td colspan="8"> No Data Found </td>
+					  </tr>
+					  <tr class="loadData">
+						<td colspan="8"> Please Wait... <i class="fa fa-spinner fa-pulse fa-lg text-info"></i></td>
+					  </tr>
+					</tbody>
+				</table>
+			</div>
+	</div>
+	
+	<!-- This is Second Panel -->
+	<div class="col-md-12 col-sm-12" ng-show="tab==2">
+		smdjklgnjkg
+	<div>
+</div>
+
+<style>
+.nav.nav-tabs li a{
+	cursor:pointer;
+}
+</style>
+
+<script type="text/javascript">
+  $(function() {  
+    $('#fromdtp').datetimepicker({
+		format: 'M/D/YYYY',
+		maxDate:new Date()
+	});
+    $('#todtp').datetimepicker({
+		format: 'M/D/YYYY',
+		maxDate:new Date()
+	});
+	$("#fromdtp").on("dp.change", function (e) {		
+		$('#todtp').data("DateTimePicker").minDate(e.date);
+	});
+	$("#todtp").on("dp.change", function (e) {		
+		$('#fromdtp').data("DateTimePicker").maxDate(e.date);
+	});
+  });
+  //DTP from: http://eonasdan.github.io/bootstrap-datetimepicker/
+</script>
