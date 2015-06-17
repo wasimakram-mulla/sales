@@ -52,6 +52,9 @@ stockmgmt.config(['$routeProvider','$resourceProvider',
       when('/log_attendance', {
         templateUrl: 'views/log_attendance.html'
       }).
+      when('/prev_attendance', {
+        templateUrl: 'views/prev_attendance.html'
+      }).
       otherwise({
         redirectTo: '/dashboard'
       });

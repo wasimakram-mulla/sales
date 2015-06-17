@@ -1,0 +1,7 @@
+attendance_register.*, employee_master.* FROM attendance_register, employee_master WHERE (attendance_register.login_date>='".$data->frmDt."' and attendance_register.login_date<='".$data->toDt."') and (attendance_register.login_month>='".$data->frmMnt."' and attendance_register.login_month<='".$data->toMnt."') and (attendance_register.login_year<='".$data->frmYr."' and attendance_register.login_year<='".$data->toYr."') and (attendance_register.emp_id = employee_master.emp_id)
+
+attendance_register.*, employee_master.* FROM attendance_register, employee_master WHERE (attendance_register.login_date>='15' and attendance_register.login_date<='17') and (attendance_register.login_month>='05' and attendance_register.login_month<='05') and (attendance_register.login_year<='2015' and attendance_register.login_year<='2015') and (attendance_register.emp_id = employee_master.emp_id)
+
+
+
+SELECT attendance_register.*, employee_master.* FROM attendance_register, employee_master WHERE (attendance_register.login_date>='".$data->frmDt."' and attendance_register.login_date<='".$data->toDt."') and (attendance_register.login_month>='".$data->frmMnt."' and attendance_register.login_month<='".$data->toMnt."') and (attendance_register.login_year<='".$data->frmYr."' and attendance_register.login_year<='".$data->toYr."') and (attendance_register.emp_id = employee_master.emp_id)
