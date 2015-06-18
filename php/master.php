@@ -477,24 +477,9 @@ $action=$_GET['action'];
 	}
 	
 	if($action=='startAttendance'){
-		$tmpDate=date('U')*1000;		
-		$insLogin="INSERT INTO `attendance_register` (`emp_id`, `record_date`) SELECT `emp_id`, '".$tmpDate."' FROM `employee_master`  where `emp_status`='active'";
+		$tmpDate=date('U')*1000;	
+		$insLogin="INSERT INTO `attendance_register` (`emp_id`, `record_date`, `login_status`) SELECT `emp_id`, '".$tmpDate."','absent' FROM `employee_master`  where `emp_status`='active'";
 		$resLogin=mysql_query($insLogin);
-		
-		$selEmployees="SELECT * FROM `employee_master` where `emp_status`='active'";
-		$resEmployees=mysql_query($selEmployees);
-		$cnt=0;
-		while($row = mysql_fetch_array( $resEmployees )) {
-			$tmpRes[$cnt]->Employee_id=$row['emp_id'];
-			$tmpRes[$cnt]->Employee_name=$row['emp_name'];
-			$tmpRes[$cnt]->Employee_pcontact=$row['emp_pcontact'];
-			$tmpRes[$cnt]->Employee_city=$row['emp_city'];				
-			$tmpRes[$cnt]->Employee_emptype=$row['emp_type'];
-			$tmpRes[$cnt]->Employee_empdesig=$row['emp_desig'];
-			$tmpRes[$cnt]->Employee_empdept=$row['emp_dept'];
-			$cnt++;
-		}			
-			$obj->Employees=$tmpRes;
 		
 		
 		if($resLogin){
@@ -512,7 +497,7 @@ $action=$_GET['action'];
 		$tmpMaxRec= $rowLogin['max(`record_date`)'];
 		
 		
-		$selEmployees="SELECT attendance_register.*, employee_master.* FROM attendance_register, employee_master WHERE attendance_register.emp_id = employee_master.emp_id and `record_date`='".$tmpMaxRec."'";
+		$selEmployees="SELECT attendance_register.*, employee_master.* FROM attendance_register, employee_master WHERE attendance_register.emp_id = employee_master.emp_id and `record_date`='".$tmpMaxRec."' and employee_master.emp_status='active'";
 		$resEmployees=mysql_query($selEmployees);
 		$count = mysql_num_rows($resEmployees);
 		if($count>0){
@@ -527,6 +512,7 @@ $action=$_GET['action'];
 				$tmpRes[$cnt]->Employee_empdept=$row['emp_dept'];
 				$tmpRes[$cnt]->Employee_loginStatus=$row['login_status'];
 				$tmpRes[$cnt]->Employee_logId=$row['login_id'];
+				$tmpRes[$cnt]->Employee_empStatus=$row['emp_status'];
 				$cnt++;
 			}
 			$obj->status=true;
@@ -540,7 +526,7 @@ $action=$_GET['action'];
 	
 	if($action=='LogSingleAttendance'){		
 		$data = json_decode(file_get_contents("php://input"));
-		$UpdtLogDetails ="UPDATE `attendance_register` SET `login_date`='".$data->Dt."',`login_month`='".$data->Mnt."',`login_year`='".$data->Yr."',`login_time`='".$data->InTime."',`login_status`='loggedIn' WHERE `login_id`='".$data->logId."'";
+		$UpdtLogDetails ="UPDATE `attendance_register` SET `login_date`='".$data->Dt."',`login_month`='".$data->Mnt."',`login_year`='".$data->Yr."',`login_time`='".$data->InTime."',`login_status`='loggedIn' WHERE `login_id`=".$data->logId;
 		$resultupdtQry=mysql_query($UpdtLogDetails);
 		if($resultupdtQry){
 			$obj->status=true;
@@ -604,7 +590,7 @@ $action=$_GET['action'];
 		$data = json_decode(file_get_contents("php://input"));
 		/* echo "FrmDt: ".$data->frmDt." - ".$data->frmMnt." - ".$data->frmYr." -*- ". $data->toDt." - ".$data->toMnt." - ".$data->toYr;
 		exit; */
-		$selEmployees="select attendance_register.*, employee_master.* FROM attendance_register, employee_master WHERE (attendance_register.login_date>=".$data->frmDt." and attendance_register.login_date<=".$data->toDt.") and (attendance_register.login_month>=".$data->frmMnt." and attendance_register.login_month<=".$data->toMnt.") and (attendance_register.login_year<=".$data->frmYr." and attendance_register.login_year<=".$data->toYr.") and (attendance_register.emp_id = employee_master.emp_id)";
+		$selEmployees="select attendance_register.*, employee_master.* FROM attendance_register, employee_master WHERE (attendance_register.login_month>=".$data->frmMnt." and attendance_register.login_month<=".$data->toMnt.") and (attendance_register.login_year<=".$data->frmYr." and attendance_register.login_year<=".$data->toYr.") and (attendance_register.emp_id = employee_master.emp_id)";
 		$resEmployees=mysql_query($selEmployees);
 		$count = mysql_num_rows($resEmployees);
 		if($count>0){
@@ -613,14 +599,66 @@ $action=$_GET['action'];
 				$tmpRes[$cnt]->Employee_id=$row['emp_id'];
 				$tmpRes[$cnt]->Employee_name=$row['emp_name'];
 				$tmpRes[$cnt]->Employee_pcontact=$row['emp_pcontact'];
-				$tmpRes[$cnt]->Employee_city=$row['emp_city'];				
-				$tmpRes[$cnt]->Employee_emptype=$row['emp_type'];
 				$tmpRes[$cnt]->Employee_empdesig=$row['emp_desig'];
-				$tmpRes[$cnt]->Employee_empdept=$row['emp_dept'];
-				$tmpRes[$cnt]->Employee_loginStatus=$row['login_status'];
 				$tmpRes[$cnt]->Employee_logId=$row['login_id'];
 				$cnt++;
 			}
+			$obj->status=true;
+			$obj->Employees=$tmpRes;
+		}
+		else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
+	
+	//FilterSpecificRecords
+	if($action=='FilterSpecificRecords'){
+		
+		$data = json_decode(file_get_contents("php://input"));
+		/* echo "FrmDt: ".$data->frmDt." - ".$data->frmMnt." - ".$data->frmYr." -*- ". $data->toDt." - ".$data->toMnt." - ".$data->toYr. " *** ". $data->empid;
+		exit; */
+		$selEmployees="SELECT * FROM `attendance_register` WHERE ((`login_month`>='".$data->frmMnt."' and `login_month`<='". $data->toMnt."') and (`login_year`<='".$data->frmYr."' and `login_year`>='".$data->toYr. "') and emp_id=".$data->empid.") or (`login_status`='absent' and emp_id=".$data->empid.")";
+		$resEmployees=mysql_query($selEmployees);
+		$count = mysql_num_rows($resEmployees);
+		if($count>0){
+			$cnt=0;
+			while($row = mysql_fetch_array( $resEmployees )) {
+				$tmpRes[$cnt]->Employee_id=$row['emp_id'];
+				$tmpRes[$cnt]->login_date=$row['login_date'];
+				$tmpRes[$cnt]->record_date=$row['record_date'];
+				$tmpRes[$cnt]->login_month=$row['login_month'];
+				$tmpRes[$cnt]->login_year=$row['login_year'];
+				$tmpRes[$cnt]->login_time=$row['login_time'];
+				$tmpRes[$cnt]->logout_time=$row['logout_time'];
+				$cnt++;
+			}
+			$obj->status=true;
+			$obj->Employees=$tmpRes;
+		}
+		else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
+	
+	//FilterRecordForCorrection
+	if($action=='FilterRecordForCorrection'){
+		$data = json_decode(file_get_contents("php://input"));
+		$selEmployees="SELECT * FROM `attendance_register` WHERE (`login_date`='".$data->selDt."' and `login_month`='".$data->selMnt."' and `login_year`='".$data->selYr."' and emp_id=".$data->empid.")";
+		$resEmployees=mysql_query($selEmployees);
+		$rowEmployees = mysql_fetch_array($resEmployees,MYSQL_BOTH);
+		$count = mysql_num_rows($resEmployees);
+		if($count>0){
+			$tmpRes->login_id=$rowEmployees['login_id'];
+			$tmpRes->Employee_id=$rowEmployees['emp_id'];
+			$tmpRes->login_date=$rowEmployees['login_date'];
+			$tmpRes->record_date=$rowEmployees['record_date'];
+			$tmpRes->login_month=$rowEmployees['login_month'];
+			$tmpRes->login_year=$rowEmployees['login_year'];
+			$tmpRes->login_time=$rowEmployees['login_time'];
+			$tmpRes->logout_time=$rowEmployees['logout_time'];
+	
 			$obj->status=true;
 			$obj->Employees=$tmpRes;
 		}

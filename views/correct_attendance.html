@@ -1,0 +1,108 @@
+<div class="col-md-11 col-sm-12" ng-controller="AttendanceCorrectionController">
+	<h3 class="text-warning">Attendance Corrections</h3>	
+	<form ng-submit="filterSpecificEmpCorrection();">
+	<div class="col-md-3 col-sm-4">
+		<label class="text-info">Select Date: </label> 
+		<div class='input-group date' >
+			<input type='text' id='seldtp' class="form-control" placeholder="Select Date for correction" required />
+			<span class="input-group-addon">
+				<span class="glyphicon glyphicon-calendar"></span>
+			</span>
+		</div>
+	</div>
+	
+	<div class="col-md-3 col-sm-4">
+		<label class="text-info">Employee: </label> 
+		<div class='input-group date' >				
+			<select class="form-control" ng-model="selectedEmpName" required>
+				<option ng-repeat="emp in allEmployees" value="{{emp.Employee_id}}_{{emp.Employee_name}}">{{emp.Employee_name}}</option>
+			</select>
+			<span class="input-group-addon">
+				<span class="fa fa-male"></span>
+			</span>
+		</div>
+	</div>
+	<div class="col-md-3 col-sm-2">
+		<br/>
+		<button class="btn btn-primary">Filter</button>
+	</div>
+	</form>
+	
+	<div class="col-md-11 col-sm-12" ng-show="filterCorrectSpecificTable">
+		<br/><br/>
+		<h3>Details of :<span class="text-success">{{Employeenm}}</span></h3> 
+		<table class="table table-bordered">
+			<thead>
+			  <tr>
+				<th>Login Date</th>
+				<th>Login Month</th>
+				<th>Login Year</th>
+				<th>In Time (dd-MMM-yyyy)</th>
+				<th>Out Time (dd-MMM-yyyy)</th>
+			  </tr>
+			</thead>
+			<tbody>
+			  <tr class="fullData">
+				<td>{{login_date}}</td>
+				<td>{{login_month}}</td>
+				<td>{{login_year}}</td>
+				<td>{{login_time | date:'dd-MMM-yyyy, hh:mm:ss a'}}</td>
+				<td>{{logout_time | date:'dd-MMM-yyyy, hh:mm:ss a'}}</td>				
+			  </tr>
+			  <tr class="noData">
+				<td colspan="8"> No Data Found </td>
+			  </tr>
+			  <tr class="loadData">
+				<td colspan="8"> Please Wait... <i class="fa fa-spinner fa-pulse fa-lg text-info"></i></td>
+			  </tr>
+			</tbody>
+		</table>
+		<br/>
+		<div class="col-md-11 col-sm-12">
+			<form ng-submit="submitCorrectionChanges();">
+			<div class="col-md-3 col-sm-4">
+				<label class="text-info">Select Login Time: </label> 
+				<div class='input-group date' >				
+					<input type='text' id='sellogintime' class="form-control" placeholder="Select Login Time for correction" ng-disabled="login_time"/>
+					<span class="input-group-addon">
+						<span class="glyphicon glyphicon-time"></span>
+					</span>
+				</div>
+			</div>
+			<div class="col-md-3 col-sm-4">
+				<label class="text-info">Select Logout Time: </label> 
+				<div class='input-group date' >				
+					<input type='text' id='sellogouttime' class="form-control" placeholder="Select Logout Time for correction" ng-disabled="logout_time" />
+					<span class="input-group-addon">
+						<span class="glyphicon glyphicon-time"></span>
+					</span>
+				</div>
+			</div>
+			<div class="col-md-3 col-sm-2">
+				<br/>
+				<button class="btn btn-primary">Submit</button>
+			</div>
+		</div>
+	</div>
+	
+</div>
+
+<script type="text/javascript">
+$(function() {  
+    $('#seldtp').datetimepicker({
+		format: 'M/D/YYYY',
+		maxDate:new Date()
+	});
+    $('#sellogintime,#sellogouttime').datetimepicker({
+		format: 'LT'		
+	});
+	
+	$("#sellogintime").on("dp.change", function (e) {		
+		$('#sellogouttime').data("DateTimePicker").minDate(e.date);
+	});
+	$("#sellogouttime").on("dp.change", function (e) {		
+		$('#sellogintime').data("DateTimePicker").maxDate(e.date);
+	});
+});
+  //DTP from: http://eonasdan.github.io/bootstrap-datetimepicker/
+</script>

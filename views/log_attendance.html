@@ -23,9 +23,9 @@
 		<td>{{data.Employee_id}}</td>
 		<td><a href="#/employee_details/:{{data.Employee_id}}">{{data.Employee_name}}</a></td>
 		<td>{{data.Employee_empdept}}</td>
-		<td>
-			<button type="button" class="btn btn-xs btn-warning" ng-click="singleLogAttendance(data.Employee_logId);" ng-hide="data.Employee_loginStatus">Login</button>
-			<button type="button" class="btn btn-xs btn-info" ng-click="singleLogoutAttendance(data.Employee_logId);" ng-show="data.Employee_loginStatus" ng-disabled="data.Employee_loginStatus=='complete'">Logout</button>
+		<td>			
+			<button type="button" class="btn btn-xs btn-warning" ng-click="singleLogAttendance(data.Employee_logId);" ng-show="data.Employee_loginStatus=='absent'">Login</button>
+			<button type="button" class="btn btn-xs btn-info" ng-click="singleLogoutAttendance(data.Employee_logId);" ng-show="data.Employee_loginStatus!='absent'">Logout</button>
 		</td>
 	  </tr>
 	  <tr class="noData">

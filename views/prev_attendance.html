@@ -68,7 +68,77 @@
 	
 	<!-- This is Second Panel -->
 	<div class="col-md-12 col-sm-12" ng-show="tab==2">
-		smdjklgnjkg
+		
+		<form ng-submit="filterSpecificEmp();">
+		<div class="col-md-3 col-sm-4">
+			<label class="text-info">From Date: </label> 
+			<div class='input-group date' >
+				<input type='text' id='fromSpecificdtp' class="form-control" placeholder="From Date" required />
+				<span class="input-group-addon">
+					<span class="glyphicon glyphicon-calendar"></span>
+				</span>
+			</div>
+		</div>
+		
+		<div class="col-md-3 col-sm-4">
+			<label class="text-info">To Date: </label> 
+			<div class='input-group date' >
+				<input type='text' id='toSpecificdtp' class="form-control" placeholder="To Date" required/>
+				<span class="input-group-addon">
+					<span class="glyphicon glyphicon-calendar"></span>
+				</span>
+			</div>
+		</div>
+		
+		<div class="col-md-3 col-sm-4">
+			<label class="text-info">Employee: </label> 
+			<div class='input-group date' >				
+				<select class="form-control" ng-model="selectedEmpName" required>
+					<option ng-repeat="emp in allEmployees" value="{{emp.Employee_id}}_{{emp.Employee_name}}">{{emp.Employee_name}}</option>
+				</select>
+				<span class="input-group-addon">
+					<span class="fa fa-male"></span>
+				</span>
+			</div>
+		</div>
+		
+		<div class="col-md-3 col-sm-2">
+			<br/>
+			<button class="btn btn-primary">Filter</button>
+		</div>
+		</form>
+			<div class="col-md-11 col-sm-12" ng-show="filterSpecificTable">
+				<br/><br/>
+				<h3>Details of :<span class="text-success">{{Employeenm}}</span></h3> 
+				<table class="table table-bordered">
+					<thead>
+					  <tr>
+						<th>Login Date</th>
+						<th>Login Month</th>
+						<th>Login Year</th>
+						<th>In Time (dd-MMM-yyyy)</th>
+						<th>Out Time (dd-MMM-yyyy)</th>
+						<th>Hours Worked (HH:MM)</th>
+					  </tr>
+					</thead>
+					<tbody ng-init="tmpCnt=0;">
+					  <tr ng-repeat="data in EmployeeSpecificData" class="fullData" ng-class="{'danger': data.login_date==null && data.login_month==null}">
+						<td>{{(data.login_date)!=null ? data.login_date:(data.record_date | date: 'dd')}}</td>
+						<td>{{(data.login_month)!=null ? data.login_month:(data.record_date | date: 'M')}}</td>
+						<td>{{(data.login_year)!=null ? data.login_year:(data.record_date | date: 'yyyy')}}</td>
+						<td>{{data.login_time | date:'dd-MMM-yyyy, hh:mm:ss a'}}</td>
+						<td>{{data.logout_time | date:'dd-MMM-yyyy, hh:mm:ss a'}}</td>
+						<td>{{((data.logout_time - data.login_time)/(1000*60*60)) >=0 ?(data.logout_time - data.login_time)/(1000*60*60):0 |  number:2}}</td>
+					  </tr>
+					  <tr class="noData">
+						<td colspan="8"> No Data Found </td>
+					  </tr>
+					  <tr class="loadData">
+						<td colspan="8"> Please Wait... <i class="fa fa-spinner fa-pulse fa-lg text-info"></i></td>
+					  </tr>
+					</tbody>
+				</table>
+			</div>
 	<div>
 </div>
 
@@ -76,16 +146,19 @@
 .nav.nav-tabs li a{
 	cursor:pointer;
 }
+.fullData.danger{
+	background:red;
+}
 </style>
 
 <script type="text/javascript">
   $(function() {  
     $('#fromdtp').datetimepicker({
-		format: 'M/D/YYYY',
+		format: 'M/YYYY',
 		maxDate:new Date()
 	});
     $('#todtp').datetimepicker({
-		format: 'M/D/YYYY',
+		format: 'M/YYYY',
 		maxDate:new Date()
 	});
 	$("#fromdtp").on("dp.change", function (e) {		
@@ -93,6 +166,21 @@
 	});
 	$("#todtp").on("dp.change", function (e) {		
 		$('#fromdtp').data("DateTimePicker").maxDate(e.date);
+	});
+	
+    $('#fromSpecificdtp').datetimepicker({
+		format: 'M/YYYY',
+		maxDate:new Date()
+	});
+    $('#toSpecificdtp').datetimepicker({
+		format: 'M/YYYY',
+		maxDate:new Date()
+	});
+	$("#fromSpecificdtp").on("dp.change", function (e) {		
+		$('#toSpecificdtp').data("DateTimePicker").minDate(e.date);
+	});
+	$("#toSpecificdtp").on("dp.change", function (e) {		
+		$('#fromSpecificdtp').data("DateTimePicker").maxDate(e.date);
 	});
   });
   //DTP from: http://eonasdan.github.io/bootstrap-datetimepicker/
