@@ -56,8 +56,8 @@ stockmgmt.controller("AttendanceRegController", function($scope, $http, $route){
 			}).
 			then(function(result){	
 				if(result.data.status==true){
-					$scope.showStartBtn=false;
-					$scope.EmployeeData=result.data.Employees;
+					$scope.showStartBtn=false;					
+					$scope.loadEmployeesData();
 					$(".fullData").show();
 				}
 				else{
@@ -94,7 +94,7 @@ stockmgmt.controller("AttendanceRegController", function($scope, $http, $route){
 		});
 	};
 	
-	$scope.singleLogAttendance = function(eId){
+	$scope.singleLogAttendance = function(eId){		
 		var dt= new Date();
 		var dateObj={
 			"logId":eId,
@@ -303,6 +303,82 @@ stockmgmt.controller("PrevAttendanceController", function($scope, $http, $route)
 				if(result.data.status){
 					$scope.EmployeeSpecificData=result.data.Employees;					
 					$(".fullData").show();
+				}
+				else{
+					$(".noData").show();
+				}
+					$(".loadData").hide();
+			});
+	};
+});
+
+
+stockmgmt.controller("AttendanceCorrectionController", function($scope, $http, $route){
+	$scope.filterCorrectSpecificTable=false;
+	$scope.fillEmployees = function(){
+		$http({
+				method: 'POST',
+				url: 'php/master.php?action=AllEmployees',
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}				
+			}).
+				success(function(data, status, headers, config) {
+			}).
+			error(function(data, status, headers, config) {
+				alert('Service Error');
+			}).
+			then(function(result){
+				if(result.data.status==true){					
+					$scope.allEmployees=result.data.Employees;
+				}
+			});
+	};
+	$scope.fillEmployees();
+	
+	$scope.filterSpecificEmpCorrection = function(){
+		if($scope.selectedEmpName == undefined){
+			alert("Please select an Employee");
+			throw "EmpVal Cannot be Blank"; 
+		}
+		var selVal=$('#seldtp').val().split('/');
+		var EmpVal=$scope.selectedEmpName.split('_');
+		var dateObjs={
+			"selMnt":selVal[0],
+			"selDt":selVal[1],
+			"selYr":selVal[2],
+			"empid":EmpVal[0]
+		};
+		
+		$scope.filterCorrectSpecificTable=true;
+		$(".noData").hide();
+		$(".fullData").hide();
+		$(".loadData").show();
+		$http({
+				method: 'POST',
+				url: 'php/master.php?action=FilterRecordForCorrection',
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'},	
+				data:dateObjs
+			}).
+				success(function(data, status, headers, config) {
+			}).
+			error(function(data, status, headers, config) {
+				alert('Service Error');
+			}).
+			then(function(result){
+				console.log(result.data);
+				$scope.Employeenm=EmpVal[1];
+				//$scope.EmployeeCorrectSpecificData=result.data.Employees;
+				
+				
+				if(result.data.status){					
+					$(".fullData").show();
+					var empData=result.data.Employees;
+					$scope.login_date=empData.login_date;			
+					$scope.login_month=empData.login_month;
+					$scope.login_year=empData.login_year;
+					$scope.login_time=empData.login_time;
+					$scope.logout_time=empData.logout_time;
+					$scope.empId=empData.Employee_id;
+					$scope.login_id=empData.login_id;
 				}
 				else{
 					$(".noData").show();

@@ -122,10 +122,10 @@
 					  </tr>
 					</thead>
 					<tbody ng-init="tmpCnt=0;">
-					  <tr ng-repeat="data in EmployeeSpecificData" class="fullData">
-						<td>{{data.login_date}}</td>
-						<td>{{data.login_month}}</td>
-						<td>{{data.login_year}}</td>
+					  <tr ng-repeat="data in EmployeeSpecificData" class="fullData" ng-class="{'danger': data.login_date==null && data.login_month==null}">
+						<td>{{(data.login_date)!=null ? data.login_date:(data.record_date | date: 'dd')}}</td>
+						<td>{{(data.login_month)!=null ? data.login_month:(data.record_date | date: 'M')}}</td>
+						<td>{{(data.login_year)!=null ? data.login_year:(data.record_date | date: 'yyyy')}}</td>
 						<td>{{data.login_time | date:'dd-MMM-yyyy, hh:mm:ss a'}}</td>
 						<td>{{data.logout_time | date:'dd-MMM-yyyy, hh:mm:ss a'}}</td>
 						<td>{{((data.logout_time - data.login_time)/(1000*60*60)) >=0 ?(data.logout_time - data.login_time)/(1000*60*60):0 |  number:2}}</td>
@@ -145,6 +145,9 @@
 <style>
 .nav.nav-tabs li a{
 	cursor:pointer;
+}
+.fullData.danger{
+	background:red;
 }
 </style>
 
