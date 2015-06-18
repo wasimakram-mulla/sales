@@ -512,7 +512,7 @@ $action=$_GET['action'];
 		$tmpMaxRec= $rowLogin['max(`record_date`)'];
 		
 		
-		$selEmployees="SELECT attendance_register.*, employee_master.* FROM attendance_register, employee_master WHERE attendance_register.emp_id = employee_master.emp_id and `record_date`='".$tmpMaxRec."'";
+		$selEmployees="SELECT attendance_register.*, employee_master.* FROM attendance_register, employee_master WHERE attendance_register.emp_id = employee_master.emp_id and `record_date`='".$tmpMaxRec."' and employee_master.emp_status='active'";
 		$resEmployees=mysql_query($selEmployees);
 		$count = mysql_num_rows($resEmployees);
 		if($count>0){
@@ -527,6 +527,7 @@ $action=$_GET['action'];
 				$tmpRes[$cnt]->Employee_empdept=$row['emp_dept'];
 				$tmpRes[$cnt]->Employee_loginStatus=$row['login_status'];
 				$tmpRes[$cnt]->Employee_logId=$row['login_id'];
+				$tmpRes[$cnt]->Employee_empStatus=$row['emp_status'];
 				$cnt++;
 			}
 			$obj->status=true;
@@ -604,7 +605,7 @@ $action=$_GET['action'];
 		$data = json_decode(file_get_contents("php://input"));
 		/* echo "FrmDt: ".$data->frmDt." - ".$data->frmMnt." - ".$data->frmYr." -*- ". $data->toDt." - ".$data->toMnt." - ".$data->toYr;
 		exit; */
-		$selEmployees="select attendance_register.*, employee_master.* FROM attendance_register, employee_master WHERE (attendance_register.login_date>=".$data->frmDt." and attendance_register.login_date<=".$data->toDt.") and (attendance_register.login_month>=".$data->frmMnt." and attendance_register.login_month<=".$data->toMnt.") and (attendance_register.login_year<=".$data->frmYr." and attendance_register.login_year<=".$data->toYr.") and (attendance_register.emp_id = employee_master.emp_id)";
+		$selEmployees="select attendance_register.*, employee_master.* FROM attendance_register, employee_master WHERE (attendance_register.login_month>=".$data->frmMnt." and attendance_register.login_month<=".$data->toMnt.") and (attendance_register.login_year<=".$data->frmYr." and attendance_register.login_year<=".$data->toYr.") and (attendance_register.emp_id = employee_master.emp_id)";
 		$resEmployees=mysql_query($selEmployees);
 		$count = mysql_num_rows($resEmployees);
 		if($count>0){
@@ -613,12 +614,37 @@ $action=$_GET['action'];
 				$tmpRes[$cnt]->Employee_id=$row['emp_id'];
 				$tmpRes[$cnt]->Employee_name=$row['emp_name'];
 				$tmpRes[$cnt]->Employee_pcontact=$row['emp_pcontact'];
-				$tmpRes[$cnt]->Employee_city=$row['emp_city'];				
-				$tmpRes[$cnt]->Employee_emptype=$row['emp_type'];
 				$tmpRes[$cnt]->Employee_empdesig=$row['emp_desig'];
-				$tmpRes[$cnt]->Employee_empdept=$row['emp_dept'];
-				$tmpRes[$cnt]->Employee_loginStatus=$row['login_status'];
 				$tmpRes[$cnt]->Employee_logId=$row['login_id'];
+				$cnt++;
+			}
+			$obj->status=true;
+			$obj->Employees=$tmpRes;
+		}
+		else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
+	
+	//FilterSpecificRecords
+	if($action=='FilterSpecificRecords'){
+		
+		$data = json_decode(file_get_contents("php://input"));
+		/* echo "FrmDt: ".$data->frmDt." - ".$data->frmMnt." - ".$data->frmYr." -*- ". $data->toDt." - ".$data->toMnt." - ".$data->toYr. " *** ". $data->empid;
+		exit; */
+		$selEmployees="SELECT * FROM `attendance_register` WHERE (`login_month`>='".$data->frmMnt."' and `login_month`<='". $data->toMnt."') and (`login_year`<='".$data->frmYr."' and `login_year`>='".$data->toYr. "') and emp_id=".$data->empid;
+		$resEmployees=mysql_query($selEmployees);
+		$count = mysql_num_rows($resEmployees);
+		if($count>0){
+			$cnt=0;
+			while($row = mysql_fetch_array( $resEmployees )) {
+				$tmpRes[$cnt]->Employee_id=$row['emp_id'];
+				$tmpRes[$cnt]->login_date=$row['login_date'];
+				$tmpRes[$cnt]->login_month=$row['login_month'];
+				$tmpRes[$cnt]->login_year=$row['login_year'];
+				$tmpRes[$cnt]->login_time=$row['login_time'];
+				$tmpRes[$cnt]->logout_time=$row['logout_time'];
 				$cnt++;
 			}
 			$obj->status=true;

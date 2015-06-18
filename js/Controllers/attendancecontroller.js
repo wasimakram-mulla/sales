@@ -193,18 +193,35 @@ stockmgmt.controller("AttendanceRegController", function($scope, $http, $route){
 
 stockmgmt.controller("PrevAttendanceController", function($scope, $http, $route){
 	$scope.filterAllTable=false;
-	$scope.filterAll = function(){
-		
-		//console.log($('#fromdtp').val())
+	$scope.filterSpecificTable=false;
+
+	$scope.fillEmployees = function(){
+		$http({
+				method: 'POST',
+				url: 'php/master.php?action=AllEmployees',
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}				
+			}).
+				success(function(data, status, headers, config) {
+			}).
+			error(function(data, status, headers, config) {
+				alert('Service Error');
+			}).
+			then(function(result){
+				if(result.data.status==true){
+					$scope.allEmployees=result.data.Employees;
+				}
+			});
+	};
+	$scope.fillEmployees();
+	
+	$scope.filterAll = function(){		
 		var frmVal=$('#fromdtp').val().split('/');
 		var toVal=$('#todtp').val().split('/');
 		var dateObjs={
-			"frmDt":frmVal[1],
 			"frmMnt":frmVal[0],
-			"frmYr":frmVal[2],
-			"toDt":toVal[1],
+			"frmYr":frmVal[1],
 			"toMnt":toVal[0],
-			"toYr":toVal[2]
+			"toYr":toVal[1]
 		};
 		
 		$scope.filterAllTable=true;
@@ -248,4 +265,49 @@ stockmgmt.controller("PrevAttendanceController", function($scope, $http, $route)
 					$(".loadData").hide();
 			});
 	};	
+	
+	$scope.filterSpecificEmp = function(){
+		var frmVal=$('#fromSpecificdtp').val().split('/');
+		var toVal=$('#toSpecificdtp').val().split('/');
+		if($scope.selectedEmpName == undefined){
+			alert("Please select an Employee");
+			throw "EmpVal Cannot be Blank"; 
+		}
+		var EmpVal=$scope.selectedEmpName.split('_');
+		var dateObjs={			
+			"frmMnt":frmVal[0],
+			"frmYr":frmVal[1],			
+			"toMnt":toVal[0],
+			"toYr":toVal[1],
+			"empid":EmpVal[0]
+		};
+		
+		$scope.filterAllTable=true;
+		$(".noData").hide();
+		$(".fullData").hide();
+		$(".loadData").show();
+		$http({
+				method: 'POST',
+				url: 'php/master.php?action=FilterSpecificRecords',
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'},	
+				data:dateObjs
+			}).
+				success(function(data, status, headers, config) {
+			}).
+			error(function(data, status, headers, config) {
+				alert('Service Error');
+			}).
+			then(function(result){
+				$scope.filterSpecificTable=true;
+				$scope.Employeenm=EmpVal[1];
+				if(result.data.status){
+					$scope.EmployeeSpecificData=result.data.Employees;					
+					$(".fullData").show();
+				}
+				else{
+					$(".noData").show();
+				}
+					$(".loadData").hide();
+			});
+	};
 });

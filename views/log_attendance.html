@@ -25,7 +25,7 @@
 		<td>{{data.Employee_empdept}}</td>
 		<td>
 			<button type="button" class="btn btn-xs btn-warning" ng-click="singleLogAttendance(data.Employee_logId);" ng-hide="data.Employee_loginStatus">Login</button>
-			<button type="button" class="btn btn-xs btn-info" ng-click="singleLogoutAttendance(data.Employee_logId);" ng-show="data.Employee_loginStatus" ng-disabled="data.Employee_loginStatus=='complete'">Logout</button>
+			<button type="button" class="btn btn-xs btn-info" ng-click="singleLogoutAttendance(data.Employee_logId);" ng-show="data.Employee_loginStatus">Logout</button>
 		</td>
 	  </tr>
 	  <tr class="noData">
