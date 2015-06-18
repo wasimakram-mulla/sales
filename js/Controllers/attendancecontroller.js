@@ -368,7 +368,6 @@ stockmgmt.controller("AttendanceCorrectionController", function($scope, $http, $
 				$scope.Employeenm=EmpVal[1];
 				//$scope.EmployeeCorrectSpecificData=result.data.Employees;
 				
-				
 				if(result.data.status){					
 					$(".fullData").show();
 					var empData=result.data.Employees;
@@ -386,4 +385,31 @@ stockmgmt.controller("AttendanceCorrectionController", function($scope, $http, $
 					$(".loadData").hide();
 			});
 	};
+	
+	$scope.submitCorrectionChanges = function(){
+		//$("#sellogintime").val()
+		//$("#sellogouttime").val()
+		if($("#sellogintime").val()!=""){
+			var Indt=new Date();
+			Indt.setDate($scope.login_date);
+			Indt.setDate($scope.login_month);
+			Indt.setDate($scope.login_year);
+			Indt.setHours($("#sellogintime").val().split(":")[0]);
+			Indt.setMinutes($("#sellogintime").val().split(":")[1].split(" ")[0]);
+			console.log(Indt);
+		}
+		if($("#sellogouttime").val()!=""){
+			var Outdt=new Date();
+			console.log($scope.login_date + " - " +$scope.login_month+ " - " +$scope.login_year+ " - " +$("#sellogouttime").val().split(":")[0]+ " - " +$("#sellogouttime").val().split(":")[1].split(" ")[0])
+			Outdt.setDate($scope.login_date);
+			Outdt.setDate($scope.login_month);
+			Outdt.setDate($scope.login_year);
+			var hr=$("#sellogouttime").val().split(":")[0];
+			var mins=$("#sellogouttime").val().split(":")[1].split(" ")[0];
+			Outdt.setHours(hr);
+			Outdt.setMinutes(mins);
+			console.log("outDt: "+ Outdt);
+		}
+		//$("#sellogintime").val().split(":")[0]
+	}
 });
