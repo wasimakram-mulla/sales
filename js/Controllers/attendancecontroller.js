@@ -336,6 +336,7 @@ stockmgmt.controller("AttendanceCorrectionController", function($scope, $http, $
 	
 	$scope.filterSpecificEmpCorrection = function(){
 		$("#dtpValuesInOut").hide();
+		$scope.CorrectionSubmitBtn=false;
 		if($scope.selectedEmpName == undefined){
 			alert("Please select an Employee");
 			throw "EmpVal Cannot be Blank"; 
@@ -380,6 +381,12 @@ stockmgmt.controller("AttendanceCorrectionController", function($scope, $http, $
 					$scope.empId=empData.Employee_id;
 					$scope.login_id=empData.login_id;
 					$("#dtpValuesInOut").show();
+					if($scope.login_time!=null && $scope.logout_time!=null){						
+						$scope.CorrectionSubmitBtn=true;
+					}
+					else{						
+						$scope.CorrectionSubmitBtn=false;
+					}
 				}
 				else{
 					$(".noData").show();
@@ -389,15 +396,7 @@ stockmgmt.controller("AttendanceCorrectionController", function($scope, $http, $
 	};
 	
 	$scope.submitCorrectionChanges = function(){	
-		if($scope.login_time==null){
-			var Indt=new Date();
-			Indt.setDate(parseInt($scope.login_date));
-			Indt.setMonth(parseInt($scope.login_month));
-			Indt.setYear(parseInt($scope.login_year));
-			Indt.setHours(parseInt($("#sellogintime").val().split(":")[0]));
-			Indt.setMinutes(parseInt($("#sellogintime").val().split(":")[1]));			
-			$scope.login_time=Indt.getTime();
-		}
+		
 		if($scope.logout_time==null){
 			var Outdt=new Date();			
 			Outdt.setDate(parseInt($scope.login_date));
@@ -440,4 +439,145 @@ stockmgmt.controller("AttendanceCorrectionController", function($scope, $http, $
 				}
 		});
 	}
+});
+
+stockmgmt.controller("AbsenteeCorrectionController", function($scope, $http, $route){
+	$scope.filterAbsenteeDetailsTable=false;
+	$scope.showRecFoundNtFound=false;
+	$scope.showRecFoundNtFound1=false;
+	$('.recordSuccess').hide();
+	$scope.fillEmployees = function(){
+		$http({
+				method: 'POST',
+				url: 'php/master.php?action=AllEmployees',
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}				
+			}).
+				success(function(data, status, headers, config) {
+			}).
+			error(function(data, status, headers, config) {
+				alert('Service Error');
+			}).
+			then(function(result){
+				if(result.data.status==true){					
+					$scope.allEmployees=result.data.Employees;
+				}
+			});
+	};
+	
+	$scope.fillEmployees();
+	
+	$scope.filterAbsentEmployee = function(){
+		if($scope.selectedEmpName == undefined){
+				alert("Please select an Employee");
+				throw "EmpVal Cannot be Blank"; 
+		}		
+		var EmpVal=$scope.selectedEmpName;
+		var dateObjs={
+			"empid":EmpVal
+		};
+		
+		$scope.filterAbsenteeDetailsTable=true;
+		$scope.showRecFoundNtFound=false;
+		$scope.showRecFoundNtFound1=false;
+		$(".noData").hide();
+		$(".fullData").hide();
+		$(".loadData").show();
+		$http({
+				method: 'POST',
+				url: 'php/master.php?action=FilterAbsenteeRecordForCorrection',
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'},	
+				data:dateObjs
+			}).
+				success(function(data, status, headers, config) {
+			}).
+			error(function(data, status, headers, config) {
+				alert('Service Error');
+			}).
+			then(function(result){
+				console.log(result.data);				
+				var selVal=$('#seldtp').val().split('/');
+				var tmpEmpData;
+				if(result.data.status==true){					
+					$(".fullData").show();
+					var fetchedData=result.data.Employees;
+					for(var i=0;i<fetchedData.length;i++){
+						var dt=new Date(parseInt(fetchedData[i].record_date));
+						if(((parseInt(selVal[0]))==dt.getMonth()+1) && ((parseInt(selVal[1]))==dt.getDate()) && ((parseInt(selVal[2]))==dt.getFullYear())){
+							tmpEmpData=fetchedData[i];
+							break;
+						}
+					}					
+				}
+				else{					
+					$(".noData").show();
+				}
+				if(tmpEmpData!=undefined){
+					$(".loadData").hide();
+					$scope.login_id=tmpEmpData.login_id;					
+					$scope.showRecFoundNtFound1=true;
+				}
+				else{
+					$scope.showRecFoundNtFound=true;
+					$(".loadData").hide();
+				}
+				
+			});
+	};
+	
+	$scope.submitPresentee = function(){
+		var selVal=$("#seldtp").val().split('/');
+		var Indt=new Date();
+		Indt.setDate(parseInt(selVal[1]));
+		Indt.setMonth(parseInt(selVal[0])-1);
+		Indt.setYear(parseInt(selVal[2]));
+		Indt.setHours(parseInt($("#sellogintime").val().split(":")[0]));
+		Indt.setMinutes(parseInt($("#sellogintime").val().split(":")[1]));		
+		var tmpIndt=Indt.getTime();
+		
+		var Outdt=new Date();			
+		Outdt.setDate(parseInt(selVal[1]));
+		Outdt.setMonth(parseInt(selVal[0])-1);
+		Outdt.setYear(parseInt(selVal[2]));
+		var hr=$("#sellogouttime").val().split(":")[0];
+		var mins=$("#sellogouttime").val().split(":")[1];
+		Outdt.setHours(parseInt(hr));
+		Outdt.setMinutes(parseInt(mins));
+		$scope.logout_time=Outdt.getTime();
+		var tmpOutdt=Outdt.getTime();
+		console.log(tmpIndt + " -*- " + tmpOutdt);
+		var dateObjs={			
+			"logId":$scope.login_id,
+			"selDt":selVal[1],
+			"selMnt":selVal[0],
+			"selYr":selVal[2],
+			"inDt":tmpIndt,
+			"outDt":tmpOutdt
+		};
+		$http({
+				method: 'POST',
+				url: 'php/master.php?action=UpdtPresenteeOfEmployee',
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+				data:dateObjs
+			}).
+				success(function(data, status, headers, config) {
+			}).
+			error(function(data, status, headers, config) {
+				alert('Service Error');
+			}).
+			then(function(result){
+				if(result.data.status==true){					
+					console.log(result.data);
+					$('.recordSuccess').show();
+					$scope.showRecFoundNtFound=false;
+					$scope.showRecFoundNtFound1=false;
+					setTimeout(function(){
+						$('.recordSuccess').hide();
+						$route.reload();
+					},2000);
+				}
+				else{
+					alert('Record Cannot be updated. Please contact your Administrator');
+				}
+		});		
+	};
 });

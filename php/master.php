@@ -685,4 +685,42 @@ $action=$_GET['action'];
 		}
 		echo json_encode($obj);
 	}
+	
+	//FilterAbsenteeRecordForCorrection
+	if($action=='FilterAbsenteeRecordForCorrection'){
+		$data = json_decode(file_get_contents("php://input"));
+		$selEmployees="SELECT * FROM `attendance_register` WHERE (emp_id=".$data->empid." and login_status='absent')";
+		$resEmployees=mysql_query($selEmployees);		
+		$count = mysql_num_rows($resEmployees);
+		if($count>0){
+			$cnt=0;
+			while($row = mysql_fetch_array( $resEmployees )) {
+				$tmpRes[$cnt]->login_id=$row['login_id'];
+				$tmpRes[$cnt]->Employee_id=$row['emp_id'];				
+				$tmpRes[$cnt]->record_date=$row['record_date'];
+				$cnt++;
+			}
+			$obj->status=true;
+			$obj->Employees=$tmpRes;
+		}
+		else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
+	
+	//UpdtPresenteeOfEmployee
+	if($action=='UpdtPresenteeOfEmployee'){
+		$data = json_decode(file_get_contents("php://input"));
+		//echo $data->selDt.' - '. $data->selMnt. ' - '. $data->selYr. ' - '. $data->inDt. ' - '. $data->outDt. ' - '. $data->logId;
+		//exit;
+		$UpdtLogDetails ="UPDATE `attendance_register` SET `login_date`='".$data->selDt."',`login_month`='".$data->selMnt."',`login_year`='".$data->selYr."',`login_time`='".$data->inDt."', `logout_time`='".$data->outDt."' ,`login_status`='complete' WHERE `login_id`=".$data->logId;
+		$resultupdtQry=mysql_query($UpdtLogDetails);
+		if($resultupdtQry){
+			$obj->status=true;
+		}else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
 ?>

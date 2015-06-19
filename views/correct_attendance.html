@@ -1,5 +1,6 @@
 <div class="col-md-11 col-sm-12" ng-controller="AttendanceCorrectionController">
-	<h3 class="text-warning">Attendance Corrections</h3>	
+	<h3 class="text-warning">Attendance Corrections</h3>
+	<h5><a class="label label-danger text-info" href="#/absent_record">Modify Absent Records</a></h5><br/>
 	<form ng-submit="filterSpecificEmpCorrection();">
 	<div class="col-md-3 col-sm-4">
 		<label class="text-info">Select Date: </label> 
@@ -29,7 +30,7 @@
 	</form>
 	
 	<div class="col-md-11 col-sm-12" ng-show="filterCorrectSpecificTable">
-		<br/><br/>
+		<br/>
 		<h3>Details of :<span class="text-success">{{Employeenm}}</span></h3> 
 		<table class="table table-bordered">
 			<thead>
@@ -60,15 +61,7 @@
 		<br/>
 		<div class="col-md-11 col-sm-12" id="dtpValuesInOut">
 			<form ng-submit="submitCorrectionChanges();">
-			<div class="col-md-3 col-sm-4">
-				<label class="text-info">Select Login Time: </label> 
-				<div class='input-group date' >				
-					<input type='text' id='sellogintime' class="form-control" placeholder="Select Login Time for correction" ng-disabled="login_time"/>
-					<span class="input-group-addon">
-						<span class="glyphicon glyphicon-time"></span>
-					</span>
-				</div>
-			</div>
+			
 			<div class="col-md-3 col-sm-4">
 				<label class="text-info">Select Logout Time: </label> 
 				<div class='input-group date' >				
@@ -80,7 +73,7 @@
 			</div>
 			<div class="col-md-3 col-sm-2">
 				<br/>
-				<button class="btn btn-primary">Submit</button>
+				<button class="btn btn-primary" ng-disabled="CorrectionSubmitBtn">Submit</button>
 			</div>
 			</form>
 		</div>
