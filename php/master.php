@@ -667,4 +667,22 @@ $action=$_GET['action'];
 		}
 		echo json_encode($obj);
 	}
+	
+	//UpdateRecordForCorrection
+	if($action=='UpdateRecordForCorrection'){
+		$data = json_decode(file_get_contents("php://input"));
+		$selLogin="SELECT distinct(`record_date`) FROM `attendance_register` WHERE `login_date`='".$data->selDt."' and `login_month`='".$data->selMnt."' and `login_year`='".$data->selYr."'";
+		$resLogin=mysql_query($selLogin);
+		$rowLogin = mysql_fetch_array($resLogin,MYSQL_BOTH);
+		$tmpRec= $rowLogin['record_date'];
+		
+		$UpdtLogDetails ="UPDATE `attendance_register` SET `record_date`='".$tmpRec."',`login_date`='".$data->selDt."',`login_month`='".$data->selMnt."',`login_year`='".$data->selYr."',`login_time`='".$data->inTime."',`logout_time`='".$data->outTime."',`login_status`='complete' WHERE `login_id`=".$data->logId;
+		$resultupdtQry=mysql_query($UpdtLogDetails);
+		if($resultupdtQry){
+			$obj->status=true;
+		}else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
 ?>

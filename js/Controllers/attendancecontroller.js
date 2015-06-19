@@ -335,6 +335,7 @@ stockmgmt.controller("AttendanceCorrectionController", function($scope, $http, $
 	$scope.fillEmployees();
 	
 	$scope.filterSpecificEmpCorrection = function(){
+		$("#dtpValuesInOut").hide();
 		if($scope.selectedEmpName == undefined){
 			alert("Please select an Employee");
 			throw "EmpVal Cannot be Blank"; 
@@ -378,6 +379,7 @@ stockmgmt.controller("AttendanceCorrectionController", function($scope, $http, $
 					$scope.logout_time=empData.logout_time;
 					$scope.empId=empData.Employee_id;
 					$scope.login_id=empData.login_id;
+					$("#dtpValuesInOut").show();
 				}
 				else{
 					$(".noData").show();
@@ -386,30 +388,56 @@ stockmgmt.controller("AttendanceCorrectionController", function($scope, $http, $
 			});
 	};
 	
-	$scope.submitCorrectionChanges = function(){
-		//$("#sellogintime").val()
-		//$("#sellogouttime").val()
-		if($("#sellogintime").val()!=""){
+	$scope.submitCorrectionChanges = function(){	
+		if($scope.login_time==null){
 			var Indt=new Date();
-			Indt.setDate($scope.login_date);
-			Indt.setDate($scope.login_month);
-			Indt.setDate($scope.login_year);
-			Indt.setHours($("#sellogintime").val().split(":")[0]);
-			Indt.setMinutes($("#sellogintime").val().split(":")[1].split(" ")[0]);
-			console.log(Indt);
+			Indt.setDate(parseInt($scope.login_date));
+			Indt.setMonth(parseInt($scope.login_month));
+			Indt.setYear(parseInt($scope.login_year));
+			Indt.setHours(parseInt($("#sellogintime").val().split(":")[0]));
+			Indt.setMinutes(parseInt($("#sellogintime").val().split(":")[1]));			
+			$scope.login_time=Indt.getTime();
 		}
-		if($("#sellogouttime").val()!=""){
-			var Outdt=new Date();
-			console.log($scope.login_date + " - " +$scope.login_month+ " - " +$scope.login_year+ " - " +$("#sellogouttime").val().split(":")[0]+ " - " +$("#sellogouttime").val().split(":")[1].split(" ")[0])
-			Outdt.setDate($scope.login_date);
-			Outdt.setDate($scope.login_month);
-			Outdt.setDate($scope.login_year);
+		if($scope.logout_time==null){
+			var Outdt=new Date();			
+			Outdt.setDate(parseInt($scope.login_date));
+			Outdt.setMonth(parseInt($scope.login_month)-1);
+			Outdt.setYear(parseInt($scope.login_year));
 			var hr=$("#sellogouttime").val().split(":")[0];
-			var mins=$("#sellogouttime").val().split(":")[1].split(" ")[0];
-			Outdt.setHours(hr);
-			Outdt.setMinutes(mins);
-			console.log("outDt: "+ Outdt);
+			var mins=$("#sellogouttime").val().split(":")[1];
+			Outdt.setHours(parseInt(hr));
+			Outdt.setMinutes(parseInt(mins));
+			$scope.logout_time=Outdt.getTime();
 		}
-		//$("#sellogintime").val().split(":")[0]
+		
+		var selVal=$("#seldtp").val().split('/');
+		var dateObjs={
+			"inTime":$scope.login_time,
+			"outTime":$scope.logout_time,
+			"logId":$scope.login_id,
+			"selDt":selVal[1],
+			"selMnt":selVal[0],
+			"selYr":selVal[2]
+		};
+		
+		$http({
+				method: 'POST',
+				url: 'php/master.php?action=UpdateRecordForCorrection',
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'},	
+				data:dateObjs
+			}).
+				success(function(data, status, headers, config) {
+			}).
+			error(function(data, status, headers, config) {
+				alert('Service Error');
+			}).
+			then(function(result){
+				if(result.data.status==true){
+					$route.reload();
+				}
+				else{
+					alert('Data cannot be updated. Please confirm your administrator');					
+				}
+		});
 	}
 });
