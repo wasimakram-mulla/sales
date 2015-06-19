@@ -87,16 +87,11 @@ $(function() {
 		format: 'M/D/YYYY',
 		maxDate:new Date()
 	});
-    $('#sellogintime,#sellogouttime').datetimepicker({
-		format: 'HH:mm'		
+    $('#sellogouttime').datetimepicker({
+		format: 'HH:mm',
+		maxDate:new Date()
 	});
 	
-	$("#sellogintime").on("dp.change", function (e) {		
-		$('#sellogouttime').data("DateTimePicker").minDate(e.date);
-	});
-	$("#sellogouttime").on("dp.change", function (e) {		
-		$('#sellogintime').data("DateTimePicker").maxDate(e.date);
-	});
 });
   //DTP from: http://eonasdan.github.io/bootstrap-datetimepicker/
 </script>
