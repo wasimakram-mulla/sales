@@ -1,0 +1,95 @@
+<div class="col-md-11 col-sm-12" ng-controller="AbsenteeCorrectionController">
+	<h3 class="text-warning">Absent Record Sheet</h3>
+	
+	<form ng-submit="filterAbsentEmployee();">
+	<div class="col-md-3 col-sm-4">
+		<label class="text-info">Select Date: </label> 
+		<div class='input-group date' >
+			<input type='text' id='seldtp' class="form-control" placeholder="Select Date for correction" required />
+			<span class="input-group-addon">
+				<span class="glyphicon glyphicon-calendar"></span>
+			</span>
+		</div>
+	</div>
+	
+	<div class="col-md-3 col-sm-4">
+		<label class="text-info">Employee: </label> 
+		<div class='input-group date' >				
+			<select class="form-control" ng-model="selectedEmpName" required>
+				<option ng-repeat="emp in allEmployees" value="{{emp.Employee_id}}">{{emp.Employee_name}}</option>
+			</select>
+			<span class="input-group-addon">
+				<span class="fa fa-male"></span>
+			</span>
+		</div>
+	</div>
+	<div class="col-md-3 col-sm-2">
+		<br/>
+		<button class="btn btn-primary">Filter</button>
+	</div>
+	</form>
+	<div class="col-md-11 col-sm-12" ng-show="filterAbsenteeDetailsTable">
+		<br/>
+		<div class="loadData">
+				<span> Please Wait... <i class="fa fa-spinner fa-pulse fa-lg text-info"></i></span>
+		</div>
+		
+		<div class="recordSuccess">
+				<span> Record Updated Successfully...</span>
+		</div>
+		<div class="col-md-11 col-sm-12" ng-show="showRecFoundNtFound">
+			<h4 class="text-danger">Record Not Found Please try again.</h4>
+		</div>
+		<div class="col-md-11 col-sm-12" ng-show="showRecFoundNtFound1">
+			<h4 class="text-success">Enter New Login and Logout Timings.</h4>
+			<br/>
+			<div class="col-md-11 col-sm-12" id="dtpValuesInOut">
+				<form ng-submit="submitPresentee();">
+				<div class="col-md-3 col-sm-4">
+					<label class="text-info">Select Login Time: </label> 
+					<div class='input-group date' >				
+						<input type='text' id='sellogintime' class="form-control" placeholder="Select Login Time for correction" />
+						<span class="input-group-addon">
+							<span class="glyphicon glyphicon-time"></span>
+						</span>
+					</div>
+				</div>
+				<div class="col-md-3 col-sm-4">
+					<label class="text-info">Select Logout Time: </label> 
+					<div class='input-group date' >				
+						<input type='text' id='sellogouttime' class="form-control" placeholder="Select Logout Time for correction" />
+						<span class="input-group-addon">
+							<span class="glyphicon glyphicon-time"></span>
+						</span>
+					</div>
+				</div>
+				<div class="col-md-3 col-sm-2">
+					<br/>
+					<button class="btn btn-primary">Submit</button>
+				</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+$(function() {  
+    $('#seldtp').datetimepicker({
+		format: 'M/D/YYYY',
+		maxDate:new Date()
+	});
+    $('#sellogintime,#sellogouttime').datetimepicker({
+		format: 'HH:mm'		
+	});
+	
+	$("#sellogintime").on("dp.change", function (e) {		
+		$('#sellogouttime').data("DateTimePicker").minDate(e.date);
+	});
+	$("#sellogouttime").on("dp.change", function (e) {		
+		$('#sellogintime').data("DateTimePicker").maxDate(e.date);
+	});
+});
+  //DTP from: http://eonasdan.github.io/bootstrap-datetimepicker/
+</script>
