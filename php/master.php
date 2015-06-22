@@ -723,4 +723,32 @@ $action=$_GET['action'];
 		}
 		echo json_encode($obj);
 	}
+	
+	//fetchsalaryinfo
+	if($action=='fetchsalaryinfo'){
+		$data = json_decode(file_get_contents("php://input"));
+		/* echo $data;
+		exit; */		
+		$selEmployees="SELECT * FROM `attendance_register`,`employee_master` WHERE (attendance_register.login_status='complete' and attendance_register.login_month=".$data." and attendance_register.emp_id=employee_master.emp_id) ORDER BY attendance_register.emp_id ASC";
+		$resEmployees=mysql_query($selEmployees);		
+		$count = mysql_num_rows($resEmployees);
+		if($count>0){
+			$cnt=0;
+			while($row = mysql_fetch_array( $resEmployees )) {
+				$tmpRes[$cnt]->login_id=$row['login_id'];
+				$tmpRes[$cnt]->Employee_id=$row['emp_id'];				
+				$tmpRes[$cnt]->Employee_sal=$row['emp_sal_per_day'];				
+				$tmpRes[$cnt]->record_date=$row['record_date'];
+				$tmpRes[$cnt]->login_time=$row['login_time'];
+				$tmpRes[$cnt]->logout_time=$row['logout_time'];
+				$cnt++;
+			}
+			$obj->status=true;
+			$obj->Employees=$tmpRes;
+		}
+		else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
 ?>
