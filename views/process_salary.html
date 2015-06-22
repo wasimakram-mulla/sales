@@ -1,0 +1,31 @@
+<div class="col-md-8 col-sm-12" ng-controller="SalaryProcessController">
+	<h3 class="text-warning">Process Salary</h3><br/>
+	<button type="button" class="btn btn-lg btn-success" ng-click="StartProcessingSalary()" id="showsalarybtn">Process Salary of: <strong>{{today | date:"MMMM"}}</strong></button>
+
+	<div class="progress" id="progressbar">
+		<div class="progress-bar progress-bar-success progress-bar-striped" id="salaryprogressbar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%" >		
+		</div>		
+	</div>	
+	<div class="col-md-8 col-sm-12" id="tabulardata">
+		<table class="table table-bordered">
+			<thead>
+			  <tr>
+				<th>Id</th>
+				<th>Name</th>
+				<th>Salary</th>
+			  </tr>
+			</thead>
+			<tbody ng-init="tmpCnt=0;">
+				<tr class="fullData" ng-repeat="data in salaryObj">
+					<td>{{data.Employee_id}}</td>
+					<td>{{data.Employee_Name}}</td>
+					<td>{{data.salaryAmt}}</td>				
+				</tr>		  
+			</tbody>
+		</table>
+		<br/>
+		<button type="button" class="btn btn-info" ng-click="UploadSalaryDetails();">Save Salary Details</button>
+	</div>
+	<br/><br/><br/>
+	<strong class="text-warning"><span class="text-danger">IMP Note:</span> Salary must be only processed only once at last day of month post logout.</strong>
+</div>

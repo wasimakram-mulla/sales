@@ -1,0 +1,54 @@
+<div class="col-md-8 col-sm-12" ng-controller="SalaryPastProcessController">
+	<h3 class="text-warning">Previous Salaries</h3><br/>
+<div class="col-md-12 col-sm-12">
+		<div class="col-md-3 col-sm-4 col-xs-12">
+			<label class="text-info">Select Month: </label> 
+			<div class='input-group date' >
+				<input type='text' id='selectMnth' class="form-control" placeholder="From Date" required />
+				<span class="input-group-addon">
+					<span class="glyphicon glyphicon-calendar"></span>
+				</span>
+			</div>
+		</div>
+		<div class="col-md-3 col-sm-4 col-xs-12">
+			<br/>
+			<button class="btn btn-sm btn-info" ng-click="ShowSalaryDetails()">Show Details</button>
+		</div>
+</div>
+<div class="col-md-12 col-sm-12">
+<br/>	
+	<div class="col-md-8 col-sm-12">
+		<table class="table table-bordered">
+			<thead>
+			  <tr>
+				<th>Id</th>
+				<th>Name</th>
+				<th>Salary</th>
+			  </tr>
+			</thead>
+			<tbody>
+				<tr class="fullData" ng-repeat="data in salaryObj">
+					<td>{{data.Employee_id}}</td>
+					<td>{{data.Employee_nm}}</td>
+					<td>{{data.salary_amount}}</td>
+				</tr>			  
+				<tr class="noData">
+					<td colspan="8"> No Data Found </td>
+				</tr>
+				<tr class="loadData">
+					<td colspan="8"> Please Wait... <i class="fa fa-spinner fa-pulse fa-lg text-info"></i></td>
+				</tr>	
+			</tbody>
+		</table>
+	</div>
+</div>
+</div>
+<script type="text/javascript">
+$(function() {  
+    $('#selectMnth').datetimepicker({
+		format: 'M/YYYY',
+		maxDate:new Date()
+	});
+});
+  //DTP from: http://eonasdan.github.io/bootstrap-datetimepicker/
+</script>

@@ -723,4 +723,86 @@ $action=$_GET['action'];
 		}
 		echo json_encode($obj);
 	}
+	
+	//fetchsalaryinfo
+	if($action=='fetchsalaryinfo'){
+		$data = json_decode(file_get_contents("php://input"));
+		/* echo $data;
+		exit; */		
+		$selEmployees="SELECT * FROM `attendance_register`,`employee_master` WHERE (attendance_register.login_status='complete' and attendance_register.login_month=".$data." and attendance_register.emp_id=employee_master.emp_id) ORDER BY attendance_register.emp_id ASC";
+		$resEmployees=mysql_query($selEmployees);		
+		$count = mysql_num_rows($resEmployees);
+		if($count>0){
+			$cnt=0;
+			while($row = mysql_fetch_array( $resEmployees )) {
+				$tmpRes[$cnt]->login_id=$row['login_id'];
+				$tmpRes[$cnt]->Employee_id=$row['emp_id'];				
+				$tmpRes[$cnt]->Employee_nm=$row['emp_name'];				
+				$tmpRes[$cnt]->Employee_sal=$row['emp_sal_per_day'];				
+				$tmpRes[$cnt]->record_date=$row['record_date'];
+				$tmpRes[$cnt]->login_time=$row['login_time'];
+				$tmpRes[$cnt]->logout_time=$row['logout_time'];
+				$cnt++;
+			}
+			$obj->status=true;
+			$obj->Employees=$tmpRes;
+		}
+		else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
+	
+	//UploadSalaryDetails
+	if($action=='UploadSalaryDetails'){
+		$data = json_decode(file_get_contents("php://input"));
+		/* echo $data->salObj[0]->salaryAmt;
+		exit; */
+		$insSalMaster="INSERT INTO `salary_master`(`sal_month`, `sal_year`) VALUES ('".$data->mnth."','".$data->yr."')";
+		$resSalMaster=mysql_query($insSalMaster);
+		if($resSalMaster){
+			$selSalM="SELECT max(`sal_id`) FROM `salary_master`";
+			$resSalM=mysql_query($selSalM);
+			$rowSalM = mysql_fetch_array($resSalM,MYSQL_BOTH);
+			$tmpMaxId = $rowSalM['max(`sal_id`)'];
+			if($resSalM){
+				for($i=0;$i<count($data->salObj);$i++){
+					$insSalMaster="INSERT INTO `salary_register`(`sal_id`, `emp_id`, `salary_amount`) VALUES (".$tmpMaxId.",".$data->salObj[$i]->Employee_id.",'".$data->salObj[$i]->salaryAmt."')";
+					$resSalMaster=mysql_query($insSalMaster);
+				}
+				$obj->status=true;
+			}
+			else{
+				$obj->status=false;
+			}
+			//$obj->status=true;
+		}else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
+	
+	//FetchSalaryDetails
+	if($action=='FetchSalaryDetails'){
+		$data = json_decode(file_get_contents("php://input"));		
+		$selEmployees="SELECT * FROM `employee_master`,`salary_register`,`salary_master` WHERE (salary_register.sal_id = (select sal_id from salary_master where sal_month='".$data->mnth."' and sal_year='".$data->yr."')) and (employee_master.emp_id=salary_register.emp_id)";
+		$resEmployees=mysql_query($selEmployees);		
+		$count = mysql_num_rows($resEmployees);
+		if($count>0){
+			$cnt=0;
+			while($row = mysql_fetch_array( $resEmployees )) {				
+				$tmpRes[$cnt]->Employee_id=$row['emp_id'];
+				$tmpRes[$cnt]->Employee_nm=$row['emp_name'];
+				$tmpRes[$cnt]->Employee_sal=$row['emp_sal_per_day'];
+				$tmpRes[$cnt]->salary_amount=$row['salary_amount'];
+				$cnt++;
+			}
+			$obj->status=true;
+			$obj->Employees=$tmpRes;
+		}
+		else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
 ?>
