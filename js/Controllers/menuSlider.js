@@ -1,5 +1,8 @@
 $(document).ready(function(){
-	menuSlider.init();
+	//setTimeout(function(){
+		//menuSlider.init();
+		//console.log("menuinit");
+	//},100);
 });
 
 var menuSlider = {};

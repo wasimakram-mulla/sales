@@ -1,33 +1,138 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <menu_structure>
 	<menu>
-		<name>Belgian Waffles</name>
-		<icon>$5.95</icon>
-		<link></link>
-		<calories>650</calories>
+		<name>DASHBOARD</name>
+		<icon>fa-tachometer</icon>
+		<link>#/dashboard</link>
+		<hasSubmenus>NO</hasSubmenus>
+		<submenu_module></submenu_module>
 	</menu>
 	<menu>
-		<name>Strawberry Belgian Waffles</name>
-		<icon>$7.95</icon>
-		<link></link>
-		<calories>900</calories>
+		<name>CLIENTS</name>
+		<icon></icon>
+		<link>#</link>
+		<hasSubmenus>YES</hasSubmenus>
+		<submenu_module>
+			<submenu>
+				<name>Add Client</name>
+				<icon>fa-user-plus</icon>
+				<link>#/add_client</link>
+			</submenu>
+			<submenu>
+				<name>Clients List</name>
+				<icon>fa-users</icon>
+				<link>#/client_list</link>
+			</submenu>
+			<submenu>
+				<name>In Active Clients</name>
+				<icon>fa-user-times</icon>
+				<link>#/nonactive_clients</link>
+			</submenu>
+		</submenu_module>
 	</menu>
 	<menu>
-		<name>Berry-Berry Belgian Waffles</name>
-		<icon>$8.95</icon>
-		<link></link>
-		<calories>900</calories>
+		<name>DEALERS</name>
+		<icon></icon>
+		<link>#</link>
+		<hasSubmenus>YES</hasSubmenus>
+		<submenu_module>
+			<submenu>
+				<name>Add Dealer</name>
+				<icon>fa-user-plus</icon>
+				<link>#/add_dealer</link>
+			</submenu>
+			<submenu>
+				<name>Dealers List</name>
+				<icon>fa-users</icon>
+				<link>#/dealer_list</link>
+			</submenu>
+			<submenu>
+				<name>In Active Dealers</name>
+				<icon>fa-user-times</icon>
+				<link>#/nonactive_dealers</link>
+			</submenu>
+		</submenu_module>
 	</menu>
 	<menu>
-		<name>French Toast</name>
-		<icon>$4.50</icon>
-		<link></link>
-		<calories>600</calories>
+		<name>PRODUCTS</name>
+		<icon></icon>
+		<link>#</link>
+		<hasSubmenus>YES</hasSubmenus>
+		<submenu_module>
+			<submenu>
+				<name>Add Product</name>
+				<icon>fa-plus-circle</icon>
+				<link>#/add_product</link>
+			</submenu>
+			<submenu>
+				<name>View Product</name>
+				<icon>fa-binoculars</icon>
+				<link>#/product_list</link>
+			</submenu>
+		</submenu_module>
 	</menu>
 	<menu>
-		<name>Homestyle Breakfast</name>
-		<icon>$6.95</icon>
-		<link></link>
-		<calories>950</calories>
+		<name>EMPLOYEES</name>
+		<icon></icon>
+		<link>#</link>
+		<hasSubmenus>YES</hasSubmenus>
+		<submenu_module>
+			<submenu>
+				<name>Add Employee</name>
+				<icon>fa-user-plus</icon>
+				<link>#/add_employee</link>
+			</submenu>
+			<submenu>
+				<name>Master List</name>
+				<icon>fa-users</icon>
+				<link>#/employee_list</link>
+			</submenu>
+			<submenu>
+				<name>In Active Employees</name>
+				<icon>fa-user-times</icon>
+				<link>#/inactive_employees</link>
+			</submenu>
+		</submenu_module>
+	</menu>
+	<menu>
+		<name>ATTENDANCE</name>
+		<icon></icon>
+		<link>#</link>
+		<hasSubmenus>YES</hasSubmenus>
+		<submenu_module>
+			<submenu>
+				<name>Log Attendance</name>
+				<icon>fa-sign-in</icon>
+				<link>#/log_attendance</link>
+			</submenu>
+			<submenu>
+				<name>Attendance Reports</name>
+				<icon>fa-file-text-o</icon>
+				<link>#/prev_attendance</link>
+			</submenu>
+			<submenu>
+				<name>Corrections</name>
+				<icon>fa-eraser</icon>
+				<link>#/correct_attendance</link>
+			</submenu>
+		</submenu_module>
+	</menu>
+	<menu>
+		<name>SALARY</name>
+		<icon></icon>
+		<link>#</link>
+		<hasSubmenus>YES</hasSubmenus>
+		<submenu_module>
+			<submenu>
+				<name>Process Salary</name>
+				<icon>fa-inr</icon>
+				<link>#/process_salary</link>
+			</submenu>
+			<submenu>
+				<name>Past Salaries</name>
+				<icon>fa-money</icon>
+				<link>#/past_salaries</link>
+			</submenu>
+		</submenu_module>
 	</menu>
 </menu_structure>
