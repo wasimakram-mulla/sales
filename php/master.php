@@ -479,8 +479,7 @@ $action=$_GET['action'];
 	if($action=='startAttendance'){
 		$tmpDate=date('U')*1000;	
 		$insLogin="INSERT INTO `attendance_register` (`emp_id`, `record_date`, `login_status`) SELECT `emp_id`, '".$tmpDate."','absent' FROM `employee_master`  where `emp_status`='active'";
-		$resLogin=mysql_query($insLogin);
-		
+		$resLogin=mysql_query($insLogin);		
 		
 		if($resLogin){
 			$obj->status=true;
@@ -784,7 +783,7 @@ $action=$_GET['action'];
 	
 	//FetchSalaryDetails
 	if($action=='FetchSalaryDetails'){
-		$data = json_decode(file_get_contents("php://input"));		
+		$data = json_decode(file_get_contents("php://input"));
 		$selEmployees="SELECT * FROM `employee_master`,`salary_register`,`salary_master` WHERE (salary_register.sal_id = (select sal_id from salary_master where sal_month='".$data->mnth."' and sal_year='".$data->yr."')) and (employee_master.emp_id=salary_register.emp_id)";
 		$resEmployees=mysql_query($selEmployees);		
 		$count = mysql_num_rows($resEmployees);
@@ -799,6 +798,95 @@ $action=$_GET['action'];
 			}
 			$obj->status=true;
 			$obj->Employees=$tmpRes;
+		}
+		else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
+	
+	//addstocks
+	if($action=='addstocks'){
+		$data = json_decode(file_get_contents("php://input"));
+		$insLogin="INSERT INTO `stock_master`(`client_id`, `prod_id`, `stock_volume`, `stock_date`) VALUES (".$data->clientid.",".$data->prodid.",".$data->volume.",'".$data->selDt."')";
+		$resLogin=mysql_query($insLogin);		
+		
+		if($resLogin){
+			$obj->status=true;
+		}else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
+	
+	//liststocks
+	if($action=='liststocks'){
+		
+		$selStocks="SELECT * FROM `stock_master`,`client_master`,`product_master` WHERE stock_master.client_id=client_master.client_id and stock_master.prod_id=product_master.prod_id";
+		$resStocks=mysql_query($selStocks);		
+		$count = mysql_num_rows($resStocks);
+		if($count>0){
+			$cnt=0;
+			while($row = mysql_fetch_array( $resStocks )) {				
+				$tmpRes[$cnt]->stock_id=$row['stock_id'];
+				$tmpRes[$cnt]->client_name=$row['client_name'];
+				$tmpRes[$cnt]->prod_name=$row['prod_name'];
+				$tmpRes[$cnt]->stockdt=$row['stock_date'];
+				$tmpRes[$cnt]->stock_vol=$row['stock_volume'];
+				$cnt++;
+			}
+			$obj->status=true;
+			$obj->Stocks=$tmpRes;
+		}
+		else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
+	
+	//listdetailsstocks
+	if($action=='listdetailsstocks'){
+		$data = json_decode(file_get_contents("php://input"));
+		$selStocks="SELECT * FROM `stock_master`,`client_master`,`product_master` WHERE client_master.client_id=(select client_id from stock_master where stock_master.stock_id=".$data.") and product_master.prod_id=(select prod_id from stock_master where stock_master.stock_id=".$data.") and stock_master.stock_id=".$data;
+		$resStocks=mysql_query($selStocks);		
+		$rowStocks = mysql_fetch_array($resStocks,MYSQL_BOTH);
+		if($resStocks){
+			$obj->client_name=$rowStocks['client_name'];
+			$obj->prod_name=$rowStocks['prod_name'];
+			$obj->stock_id=$rowStocks['stock_id'];
+			$obj->stock_vol=$rowStocks['stock_volume'];
+			$obj->stock_date=$rowStocks['stock_date'];
+			$obj->status=true;		
+		}
+		else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
+	
+	//updatedetailsstocks
+	if($action=='updatedetailsstocks'){
+		$data = json_decode(file_get_contents("php://input"));		
+		$selStocks="UPDATE `stock_master` SET `stock_volume`='".$data->volume."' WHERE `stock_id`=".$data->stockid;
+		$resStocks=mysql_query($selStocks);		
+		
+		if($resStocks){
+			$obj->status=true;		
+		}
+		else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
+	
+	//deletedetailsstocks
+	if($action=='deletedetailsstocks'){
+		$data = json_decode(file_get_contents("php://input"));		
+		$delStocks="DELETE FROM `stock_master` WHERE `stock_id`=".$data;
+		$resStocks=mysql_query($delStocks);		
+		
+		if($resStocks){
+			$obj->status=true;		
 		}
 		else{
 			$obj->status=false;
