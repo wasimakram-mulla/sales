@@ -1,0 +1,30 @@
+<div class="col-md-8 col-sm-12" ng-controller="DetailsStockController">
+	<h3 class="text-warning">Previous Stocks</h3>
+	
+<div class="col-md-12 col-sm-12">
+			<a href="#/view_stock" class="btn btn-xs btn-warning">Back</a><br/><br/>
+		<div class="col-md-6 col-sm-4 col-xs-12">
+		<form ng-submit="updtStockDetails()">
+			<label class="text-info">Select Month:</label> 
+			<div class='input-group date' >
+				<input type='text' id='selectMnth' class="form-control" placeholder="From Date" ng-value="prevDt | date: 'M/d/yyyy'" disabled/>
+				<span class="input-group-addon">
+					<span class="glyphicon glyphicon-calendar"></span>
+				</span>
+			</div>
+			<br/>
+			<label class="text-info">Client: </label>
+			<input type='text' class="form-control" ng-model="clientnm" placeholder="Client" disabled />
+			<br/>
+			<label class="text-info">Product: </label>
+			<input type='text' class="form-control" ng-model="prodnm" placeholder="Product" disabled />
+			<br/>
+			<label class="text-info">Volume: </label>
+			<input type='text' class="form-control" ng-model="volume" placeholder="Volume" required />
+			<br/>
+			<button class="btn btn-success" ><i class="fa fa-floppy-o"></i> Update Stock Details</button>			
+			<button class="btn btn-danger" type="button" ng-click="deleteStock();"><i class="fa fa-trash"></i> Delete</button>			
+		</form>
+		</div>
+</div>
+</div>

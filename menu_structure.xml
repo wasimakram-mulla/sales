@@ -146,6 +146,11 @@
 				<icon>fa-cart-plus</icon>
 				<link>#/add_stock</link>
 			</submenu>
+			<submenu>
+				<name>View Stock Details</name>
+				<icon>fa-cart-arrow-down</icon>
+				<link>#/view_stock</link>
+			</submenu>
 		</submenu_module>
 	</menu>
 </menu_structure>

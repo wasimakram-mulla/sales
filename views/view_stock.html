@@ -1,0 +1,35 @@
+<div class="col-md-8 col-sm-12" ng-controller="ViewStockController">
+	<h3 class="text-warning">Previous Stocks</h3><br/>
+<div class="col-md-12 col-sm-12">
+<table class="table table-bordered">
+	<thead>
+	  <tr>
+		<th>#</th>
+		<th>Client Name</th>
+		<th>Product Name</th>
+		<th>Stock Date (dd-MM-yyyy)</th>
+		<th>Stock Volume</th>
+		<th></th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr ng-repeat="data in stockData | filter:searchClient" class="fullData">
+		<td>{{$index+1}}</td>
+		<td>{{data.client_name}}</td>
+		<td>{{data.prod_name}}</td>
+		<td>{{data.stockdt | date:'dd-MM-yyyy'}}</td>
+		<td>{{data.stock_vol}}</td>		
+		<td>
+			<button type="button" class="btn btn-sm btn-info" ng-click="editStockDetails(data.stock_id);" data-toggle="modal" data-target="#myModal">Edit</button> 			
+		</td>
+	  </tr>
+	  <tr class="noData">
+		<td colspan="8"> No Data Found </td>
+	  </tr>
+	  <tr class="loadData">
+		<td colspan="8"> Please Wait... <i class="fa fa-spinner fa-pulse fa-lg text-info"></i></td>
+	  </tr>
+	</tbody>
+</table>
+</div>
+</div>
