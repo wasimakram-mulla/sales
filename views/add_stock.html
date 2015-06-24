@@ -1,0 +1,19 @@
+<div class="col-md-8 col-sm-12" ng-controller="StockController">
+	<h3 class="text-warning">Add Stocks</h3>
+	<div class="col-md-6 col-sm-12">
+		<form ng-submit="saveDetails();">
+			<label class="text-info">Select Client</label>
+			<select ng-model="clientnm" class="form-control">
+				<option ng-repeat="data in clientdata" value="{{data.client_id}}">{{data.client_name}}</option>
+			</select>
+			<br/>
+			<label class="text-info">Select Product</label>
+			<select ng-model="prodnm" class="form-control">
+				<option ng-repeat="data in proddata" value="{{data.Product_id}}">{{data.Product_name}}</option>
+			</select>
+			<br/>
+			<button type="submit" class="btn btn-success">Save Details</button>
+			<button type="reset" class="btn btn-info">Reset</button>
+		</form>
+	</div>
+</div>

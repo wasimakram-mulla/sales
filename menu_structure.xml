@@ -135,4 +135,17 @@
 			</submenu>
 		</submenu_module>
 	</menu>
+	<menu>
+		<name>STOCKS</name>
+		<icon></icon>
+		<link>#</link>
+		<hasSubmenus>YES</hasSubmenus>
+		<submenu_module>
+			<submenu>
+				<name>Add New Stock</name>
+				<icon>fa-cart-plus</icon>
+				<link>#/add_stock</link>
+			</submenu>
+		</submenu_module>
+	</menu>
 </menu_structure>

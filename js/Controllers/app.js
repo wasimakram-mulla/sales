@@ -67,6 +67,9 @@ stockmgmt.config(['$routeProvider','$resourceProvider',
       when('/past_salaries', {
         templateUrl: 'views/past_salaries.html'
       }).
+      when('/add_stock', {
+        templateUrl: 'views/add_stock.html'
+      }).
       otherwise({
         redirectTo: '/dashboard'
       });
