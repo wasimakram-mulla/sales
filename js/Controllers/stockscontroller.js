@@ -18,7 +18,7 @@ stockmgmt.controller("AddStockController", function($scope, $http, $route){
 	$scope.fetchProducts = function(){
 		$http({
 			method: 'POST',
-			url: 'php/master.php?action=AllProducts',
+			url: 'php/master.php?action=AllClientProducts',
 			headers: {'Content-Type': 'application/x-www-form-urlencoded'}				
 		}).
 		error(function(data, status, headers, config) {

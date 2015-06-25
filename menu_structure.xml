@@ -60,14 +60,24 @@
 		<hasSubmenus>YES</hasSubmenus>
 		<submenu_module>
 			<submenu>
-				<name>Add Product</name>
+				<name>Add Company Products</name>
 				<icon>fa-plus-circle</icon>
 				<link>#/add_product</link>
 			</submenu>
 			<submenu>
-				<name>View Product</name>
+				<name>Add Client Products</name>
+				<icon>fa-plus-circle</icon>
+				<link>#/add_client_product</link>
+			</submenu>
+			<submenu>
+				<name>View Company Products</name>
 				<icon>fa-binoculars</icon>
 				<link>#/product_list</link>
+			</submenu>
+			<submenu>
+				<name>View Client Products</name>
+				<icon>fa-binoculars</icon>
+				<link>#/clientproduct_list</link>
 			</submenu>
 		</submenu_module>
 	</menu>

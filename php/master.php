@@ -250,9 +250,39 @@ $action=$_GET['action'];
 		}
 		echo json_encode($obj);
 	}
+	if($action=='AddClientProduct'){
+		$data = json_decode(file_get_contents("php://input"));
+		$insProductDetails ="INSERT INTO `product_client_master`(`prod_name`) VALUES ('".$data->Product_name."')";
+		$resultaddQry=mysql_query($insProductDetails);
+		if($resultaddQry){
+			$obj->status=true;
+		}else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
 		
 	if($action=='AllProducts'){
 		$selDealers="SELECT * FROM `product_master`";
+		$resDealers=mysql_query($selDealers);
+		$count = mysql_num_rows($resDealers);
+		if($count>0){
+			$cnt=0;
+			while($row = mysql_fetch_array( $resDealers )) {
+				$tmpRes[$cnt]->Product_id=$row['prod_id'];
+				$tmpRes[$cnt]->Product_name=$row['prod_name'];
+				$cnt++;
+			}
+			$obj->status=true;
+			$obj->Products=$tmpRes;
+		}
+		else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}		
+	if($action=='AllClientProducts'){
+		$selDealers="SELECT * FROM `product_client_master`";
 		$resDealers=mysql_query($selDealers);
 		$count = mysql_num_rows($resDealers);
 		if($count>0){
@@ -279,11 +309,31 @@ $action=$_GET['action'];
 		$obj->Product_id=$rowProduct['prod_id'];
 		$obj->Product_name=$rowProduct['prod_name'];
 		echo json_encode($obj);
-	}	
+	}
+	if($action=='SpecificClientProductDetails'){
+		$data = json_decode(file_get_contents("php://input"));
+		$selProduct="SELECT * FROM `product_client_master` where `prod_id`=".$data;
+		$resProduct=mysql_query($selProduct);
+		$rowProduct = mysql_fetch_array($resProduct,MYSQL_BOTH);
+		$obj->Product_id=$rowProduct['prod_id'];
+		$obj->Product_name=$rowProduct['prod_name'];
+		echo json_encode($obj);
+	}
 	
 	if($action=='UpdateProductDetails'){
 		$data = json_decode(file_get_contents("php://input"));
 		$UpdtProductDetails ="UPDATE `product_master` SET `prod_name`='".$data->Product_name."' WHERE `prod_id`=".$data->Product_id;
+		$resultUpdtQry=mysql_query($UpdtProductDetails);
+		if($resultUpdtQry){
+			$obj->status=true;
+		}else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
+	if($action=='UpdateClientProductDetails'){
+		$data = json_decode(file_get_contents("php://input"));
+		$UpdtProductDetails ="UPDATE `product_client_master` SET `prod_name`='".$data->Product_name."' WHERE `prod_id`=".$data->Product_id;
 		$resultUpdtQry=mysql_query($UpdtProductDetails);
 		if($resultUpdtQry){
 			$obj->status=true;
@@ -304,9 +354,28 @@ $action=$_GET['action'];
 		}
 		echo json_encode($obj);
 	}
+	if($action=='deleteclientproduct'){
+		$data = json_decode(file_get_contents("php://input"));
+		$DelProductDetails ="DELETE FROM `product_client_master` WHERE `prod_id`=".$data;
+		$resultDelQry=mysql_query($DelProductDetails);
+		if($resultDelQry){
+			$obj->status=true;
+		}else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+	}
 	
 	if($action=='getProdId'){
 		$selProduct="SELECT MAX(`prod_id`) FROM `product_master`";
+		$resProduct=mysql_query($selProduct);
+		$rowProduct = mysql_fetch_array($resProduct,MYSQL_BOTH);
+		
+		$obj->Product_id=$rowProduct['MAX(`prod_id`)'];
+		echo json_encode($obj);
+	}	
+	if($action=='getClientProdId'){
+		$selProduct="SELECT MAX(`prod_id`) FROM `product_client_master`";
 		$resProduct=mysql_query($selProduct);
 		$rowProduct = mysql_fetch_array($resProduct,MYSQL_BOTH);
 		
@@ -822,7 +891,7 @@ $action=$_GET['action'];
 	//liststocks
 	if($action=='liststocks'){
 		
-		$selStocks="SELECT * FROM `stock_master`,`client_master`,`product_master` WHERE stock_master.client_id=client_master.client_id and stock_master.prod_id=product_master.prod_id";
+		$selStocks="SELECT * FROM `stock_master`,`client_master`,`product_client_master` WHERE stock_master.client_id=client_master.client_id and stock_master.prod_id=product_client_master.prod_id";
 		$resStocks=mysql_query($selStocks);		
 		$count = mysql_num_rows($resStocks);
 		if($count>0){
@@ -847,7 +916,7 @@ $action=$_GET['action'];
 	//listdetailsstocks
 	if($action=='listdetailsstocks'){
 		$data = json_decode(file_get_contents("php://input"));
-		$selStocks="SELECT * FROM `stock_master`,`client_master`,`product_master` WHERE client_master.client_id=(select client_id from stock_master where stock_master.stock_id=".$data.") and product_master.prod_id=(select prod_id from stock_master where stock_master.stock_id=".$data.") and stock_master.stock_id=".$data;
+		$selStocks="SELECT * FROM `stock_master`,`client_master`,`product_client_master` WHERE client_master.client_id=(select client_id from stock_master where stock_master.stock_id=".$data.") and product_client_master.prod_id=(select prod_id from stock_master where stock_master.stock_id=".$data.") and stock_master.stock_id=".$data;
 		$resStocks=mysql_query($selStocks);		
 		$rowStocks = mysql_fetch_array($resStocks,MYSQL_BOTH);
 		if($resStocks){
