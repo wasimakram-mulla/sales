@@ -3,7 +3,7 @@ var stockmgmt = angular.module('stockmgmt', [
 'ngResource'
 ]);
 
-stockmgmt.run(function($location) {
+stockmgmt.run(function($location) {	
 	//$location.path('/dashboard');
 });
 
@@ -86,4 +86,42 @@ stockmgmt.config(['$routeProvider','$resourceProvider',
         redirectTo: '/dashboard'
       });
 	  
+}]);
+
+/* stockmgmt.controller("LandingController", function($scope, $http, $route){
+	var homeObj=$scope;
+	homeObj.setCurrTime = function(){				
+			homeObj.CurrSystemTime=new Date();
+		window.setTimeout(function(){
+			console.log(homeObj.CurrSystemTime);
+			homeObj.setCurrTime();
+		},1000);
+	};
+	$scope.setCurrTime();
+}); */
+
+stockmgmt.directive('myCurrentTime', ['$interval', 'dateFilter',
+	function($interval, dateFilter) {
+	// return the directive link function. (compile function not needed)
+	return function(scope, element, attrs) {
+		var stopTime; // so that we can cancel the time updates
+
+		// used to update the UI
+		function updateTime() {
+			element.text(dateFilter(new Date(), 'dd/MM/yyyy, HH:mm:ss'));
+		}
+
+		// watch the expression, and update the UI on change.
+		scope.$watch(attrs.myCurrentTime, function() {		  
+		  updateTime();
+		});
+
+		stopTime = $interval(updateTime, 1000);
+
+		// listen on DOM destroy (removal) event, and cancel the next UI update
+		// to prevent updating time after the DOM element was removed.
+		element.on('$destroy', function() {
+		  $interval.cancel(stopTime);
+		});
+	}
 }]);
