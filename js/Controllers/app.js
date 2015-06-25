@@ -34,8 +34,14 @@ stockmgmt.config(['$routeProvider','$resourceProvider',
       when('/add_product', {
         templateUrl: 'views/add_product.html'
       }).
+      when('/add_client_product', {
+        templateUrl: 'views/add_client_product.html'
+      }).
       when('/product_list', {
         templateUrl: 'views/product_list.html'
+      }).
+      when('/clientproduct_list', {
+        templateUrl: 'views/clientproduct_list.html'
       }).
       when('/add_employee', {
         templateUrl: 'views/add_employee.html'
