@@ -824,30 +824,52 @@ $action=$_GET['action'];
 	//UploadSalaryDetails
 	if($action=='UploadSalaryDetails'){
 		$data = json_decode(file_get_contents("php://input"));
-		/* echo $data->salObj[0]->salaryAmt;
-		exit; */
-		$insSalMaster="INSERT INTO `salary_master`(`sal_month`, `sal_year`) VALUES ('".$data->mnth."','".$data->yr."')";
-		$resSalMaster=mysql_query($insSalMaster);
-		if($resSalMaster){
-			$selSalM="SELECT max(`sal_id`) FROM `salary_master`";
-			$resSalM=mysql_query($selSalM);
-			$rowSalM = mysql_fetch_array($resSalM,MYSQL_BOTH);
-			$tmpMaxId = $rowSalM['max(`sal_id`)'];
-			if($resSalM){
-				for($i=0;$i<count($data->salObj);$i++){
-					$insSalMaster="INSERT INTO `salary_register`(`sal_id`, `emp_id`, `salary_amount`) VALUES (".$tmpMaxId.",".$data->salObj[$i]->Employee_id.",'".$data->salObj[$i]->salaryAmt."')";
-					$resSalMaster=mysql_query($insSalMaster);
+		$selSal="SELECT * FROM `salary_master` WHERE `sal_month`='".$data->mnth."'";
+		$resSal=mysql_query($selSal);
+		$count = mysql_num_rows($resSal);
+		if($count<=0){		
+			$insSalMaster="INSERT INTO `salary_master`(`sal_month`, `sal_year`) VALUES ('".$data->mnth."','".$data->yr."')";
+			$resSalMaster=mysql_query($insSalMaster);
+			if($resSalMaster){
+				$selSalM="SELECT max(`sal_id`) FROM `salary_master`";
+				$resSalM=mysql_query($selSalM);
+				$rowSalM = mysql_fetch_array($resSalM,MYSQL_BOTH);
+				$tmpMaxId = $rowSalM['max(`sal_id`)'];
+				if($resSalM){
+					for($i=0;$i<count($data->salObj);$i++){
+						$insSalMaster="INSERT INTO `salary_register`(`sal_id`, `emp_id`, `salary_amount`) VALUES (".$tmpMaxId.",".$data->salObj[$i]->Employee_id.",'".$data->salObj[$i]->salaryAmt."')";
+						$resSalMaster=mysql_query($insSalMaster);
+					}
+					$obj->status=true;
 				}
-				$obj->status=true;
+				else{
+					$obj->status=false;
+				}
+				//$obj->status=true;
+			}else{
+				$obj->status=false;
+			}
+			echo json_encode($obj);
+		}
+		else{
+			/* echo "already present";
+			exit; */
+			$selSal="SELECT * FROM `salary_master` WHERE `sal_month`='".$data->mnth."'";
+			$resSal=mysql_query($selSal);
+			$rowSal = mysql_fetch_array($resSal,MYSQL_BOTH);
+			if($rowSal){
+				for($i=0;$i<count($data->salObj);$i++){
+					//$uptSalMaster="INSERT INTO `salary_register`(`sal_id`, `emp_id`, `salary_amount`) VALUES (".$tmpMaxId.",".$data->salObj[$i]->Employee_id.",'".$data->salObj[$i]->salaryAmt."')";
+					$uptSalMaster="UPDATE `salary_register` SET `salary_amount`='".$data->salObj[$i]->salaryAmt."' WHERE `sal_id`=".$rowSal['sal_id']." and `emp_id`=".$data->salObj[$i]->Employee_id;
+					$resUpdSalMaster=mysql_query($uptSalMaster);
+				}
+					$obj->status=true;
 			}
 			else{
 				$obj->status=false;
 			}
-			//$obj->status=true;
-		}else{
-			$obj->status=false;
+			echo json_encode($obj);
 		}
-		echo json_encode($obj);
 	}
 	
 	//FetchSalaryDetails
