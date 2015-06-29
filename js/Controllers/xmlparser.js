@@ -42,7 +42,7 @@ $(document).ready(function(){
 				mobilestr=mobilestr+tmpmobilestr;					
 			}
 		});
-		
+		$(".menuSpinner").remove();
 		$('.menuWrapperParser').append(desktopstr);
 		$('.navbarMenus').append(mobilestr);
 		menuSlider.init();					

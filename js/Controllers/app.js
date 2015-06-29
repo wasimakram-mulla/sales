@@ -88,18 +88,6 @@ stockmgmt.config(['$routeProvider','$resourceProvider',
 	  
 }]);
 
-/* stockmgmt.controller("LandingController", function($scope, $http, $route){
-	var homeObj=$scope;
-	homeObj.setCurrTime = function(){				
-			homeObj.CurrSystemTime=new Date();
-		window.setTimeout(function(){
-			console.log(homeObj.CurrSystemTime);
-			homeObj.setCurrTime();
-		},1000);
-	};
-	$scope.setCurrTime();
-}); */
-
 stockmgmt.directive('myCurrentTime', ['$interval', 'dateFilter',
 	function($interval, dateFilter) {
 	// return the directive link function. (compile function not needed)
