@@ -13,9 +13,11 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/bootstrap-theme.min.css" rel="stylesheet">
     <link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet">
-    
-	
-    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">	    <link href="css/style.css" rel="stylesheet">	
+
+	<!-- Font Awesome CSS -->
+    <link href="css/font-awesome.min.css" rel="stylesheet">	
+	<!-- Custom CSS -->    <link href="css/style.css" rel="stylesheet">	
+	<!-- Libraries and Controller JS -->
     <script src="js/Libs/jquery-1.11.1.min.js"></script>
 	<script src="js/Libs/bootstrap.min.js"></script>
 	<script src="js/Libs/angular.min.js"></script>
@@ -35,12 +37,16 @@
 	<script src="js/Controllers/stockscontroller.js"></script>
   </head>
 <body><nav class="navbar navbar-inverse navbar-static-top">  	<div class="navbar-header">	  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">		<span class="sr-only">Toggle navigation</span>		<span class="icon-bar"></span>		<span class="icon-bar"></span>		<span class="icon-bar"></span>	  </button>	  <a class="navbar-brand" href="#" style="color:#ddd">Stock Management</a>	</div>	<div id="navbar" class="navbar-collapse collapse">
-		<!-- Mobile Menus -->		<ul class="nav navbar-nav navbar-right navbarMenus"></ul>
+		<!-- Mobile Menus -->		<ul class="nav navbar-nav navbar-right navbarMenus">
+			<li class="menuSpinner"><a>Please Wait... <i class="fa fa-spinner fa-pulse fa-lg text-primary"></i></a></li>
+		</ul>
 		<ul class="nav navbar-nav navbar-right">
             <li class="active"><a><strong><span my-current-time="format"></span></strong></a></li>
 		</ul>	</div></nav>	
 	<div class="col-md-2 menuWrapper"><br/>
 		<!-- Side Menus -->
-		<ul class="list-group menuWrapperParser"></ul>			</div>  <div class="col-md-10 col-sm-12 col-xs-12" ng-view></div>  
+		<ul class="list-group menuWrapperParser">
+			<li class="list-group-item menuSpinner">Please Wait... <i class="fa fa-spinner fa-pulse fa-lg text-primary"></i></li>
+		</ul>			</div>  <div class="col-md-10 col-sm-12 col-xs-12" ng-view></div>  
 </body>
 </html>
