@@ -652,7 +652,7 @@ $action=$_GET['action'];
 	}
 	
 	/* Previous Attendance API's	*/
-	//FilterAllRecords
+	
 	if($action=='FilterAllRecords'){
 		//SELECT * FROM `attendance_register` WHERE (`login_date`>='15' and `login_date`<='17') and (`login_month`>='5' and `login_month`<='5') and (`login_year`<='2015' and `login_year`<='2015')
 		$data = json_decode(file_get_contents("php://input"));
@@ -680,7 +680,6 @@ $action=$_GET['action'];
 		echo json_encode($obj);
 	}
 	
-	//FilterSpecificRecords
 	if($action=='FilterSpecificRecords'){
 		
 		$data = json_decode(file_get_contents("php://input"));
@@ -709,8 +708,7 @@ $action=$_GET['action'];
 		}
 		echo json_encode($obj);
 	}
-	
-	//FilterRecordForCorrection
+		
 	if($action=='FilterRecordForCorrection'){
 		$data = json_decode(file_get_contents("php://input"));
 		$selEmployees="SELECT * FROM `attendance_register` WHERE (`login_date`='".$data->selDt."' and `login_month`='".$data->selMnt."' and `login_year`='".$data->selYr."' and emp_id=".$data->empid.")";
@@ -735,8 +733,7 @@ $action=$_GET['action'];
 		}
 		echo json_encode($obj);
 	}
-	
-	//UpdateRecordForCorrection
+		
 	if($action=='UpdateRecordForCorrection'){
 		$data = json_decode(file_get_contents("php://input"));
 		$selLogin="SELECT distinct(`record_date`) FROM `attendance_register` WHERE `login_date`='".$data->selDt."' and `login_month`='".$data->selMnt."' and `login_year`='".$data->selYr."'";
@@ -753,8 +750,7 @@ $action=$_GET['action'];
 		}
 		echo json_encode($obj);
 	}
-	
-	//FilterAbsenteeRecordForCorrection
+		
 	if($action=='FilterAbsenteeRecordForCorrection'){
 		$data = json_decode(file_get_contents("php://input"));
 		$selEmployees="SELECT * FROM `attendance_register` WHERE (emp_id=".$data->empid." and login_status='absent')";
@@ -776,8 +772,7 @@ $action=$_GET['action'];
 		}
 		echo json_encode($obj);
 	}
-	
-	//UpdtPresenteeOfEmployee
+		
 	if($action=='UpdtPresenteeOfEmployee'){
 		$data = json_decode(file_get_contents("php://input"));
 		//echo $data->selDt.' - '. $data->selMnt. ' - '. $data->selYr. ' - '. $data->inDt. ' - '. $data->outDt. ' - '. $data->logId;
@@ -792,7 +787,7 @@ $action=$_GET['action'];
 		echo json_encode($obj);
 	}
 	
-	//fetchsalaryinfo
+	/* Salary API */	
 	if($action=='fetchsalaryinfo'){
 		$data = json_decode(file_get_contents("php://input"));
 		/* echo $data;
@@ -820,8 +815,7 @@ $action=$_GET['action'];
 		}
 		echo json_encode($obj);
 	}
-	
-	//UploadSalaryDetails
+		
 	if($action=='UploadSalaryDetails'){
 		$data = json_decode(file_get_contents("php://input"));
 		$selSal="SELECT * FROM `salary_master` WHERE `sal_month`='".$data->mnth."'";
@@ -844,22 +838,18 @@ $action=$_GET['action'];
 				}
 				else{
 					$obj->status=false;
-				}
-				//$obj->status=true;
+				}				
 			}else{
 				$obj->status=false;
 			}
 			echo json_encode($obj);
 		}
 		else{
-			/* echo "already present";
-			exit; */
 			$selSal="SELECT * FROM `salary_master` WHERE `sal_month`='".$data->mnth."'";
 			$resSal=mysql_query($selSal);
 			$rowSal = mysql_fetch_array($resSal,MYSQL_BOTH);
 			if($rowSal){
-				for($i=0;$i<count($data->salObj);$i++){
-					//$uptSalMaster="INSERT INTO `salary_register`(`sal_id`, `emp_id`, `salary_amount`) VALUES (".$tmpMaxId.",".$data->salObj[$i]->Employee_id.",'".$data->salObj[$i]->salaryAmt."')";
+				for($i=0;$i<count($data->salObj);$i++){					
 					$uptSalMaster="UPDATE `salary_register` SET `salary_amount`='".$data->salObj[$i]->salaryAmt."' WHERE `sal_id`=".$rowSal['sal_id']." and `emp_id`=".$data->salObj[$i]->Employee_id;
 					$resUpdSalMaster=mysql_query($uptSalMaster);
 				}
@@ -872,7 +862,6 @@ $action=$_GET['action'];
 		}
 	}
 	
-	//FetchSalaryDetails
 	if($action=='FetchSalaryDetails'){
 		$data = json_decode(file_get_contents("php://input"));
 		$selEmployees="SELECT * FROM `employee_master`,`salary_register`,`salary_master` WHERE (salary_register.sal_id = (select sal_id from salary_master where sal_month='".$data->mnth."' and sal_year='".$data->yr."')) and (employee_master.emp_id=salary_register.emp_id)";
@@ -896,10 +885,10 @@ $action=$_GET['action'];
 		echo json_encode($obj);
 	}
 	
-	//addstocks
+	/* Stock API */	
 	if($action=='addstocks'){
 		$data = json_decode(file_get_contents("php://input"));
-		$insLogin="INSERT INTO `stock_master`(`client_id`, `prod_id`, `stock_volume`, `stock_date`) VALUES (".$data->clientid.",".$data->prodid.",".$data->volume.",'".$data->selDt."')";
+		$insLogin="INSERT INTO `stock_master`(`client_id`, `prod_id`, `stock_volume`, `stock_date`, `stock_status`) VALUES (".$data->clientid.",".$data->prodid.",".$data->volume.",'".$data->selDt."', 'active')";
 		$resLogin=mysql_query($insLogin);		
 		
 		if($resLogin){
@@ -909,10 +898,8 @@ $action=$_GET['action'];
 		}
 		echo json_encode($obj);
 	}
-	
-	//liststocks
-	if($action=='liststocks'){
 		
+	if($action=='liststocks'){
 		$selStocks="SELECT * FROM `stock_master`,`client_master`,`product_client_master` WHERE stock_master.client_id=client_master.client_id and stock_master.prod_id=product_client_master.prod_id";
 		$resStocks=mysql_query($selStocks);		
 		$count = mysql_num_rows($resStocks);
@@ -924,6 +911,7 @@ $action=$_GET['action'];
 				$tmpRes[$cnt]->prod_name=$row['prod_name'];
 				$tmpRes[$cnt]->stockdt=$row['stock_date'];
 				$tmpRes[$cnt]->stock_vol=$row['stock_volume'];
+				$tmpRes[$cnt]->stock_status=$row['stock_status'];
 				$cnt++;
 			}
 			$obj->status=true;
@@ -935,7 +923,6 @@ $action=$_GET['action'];
 		echo json_encode($obj);
 	}
 	
-	//listdetailsstocks
 	if($action=='listdetailsstocks'){
 		$data = json_decode(file_get_contents("php://input"));
 		$selStocks="SELECT * FROM `stock_master`,`client_master`,`product_client_master` WHERE client_master.client_id=(select client_id from stock_master where stock_master.stock_id=".$data.") and product_client_master.prod_id=(select prod_id from stock_master where stock_master.stock_id=".$data.") and stock_master.stock_id=".$data;
@@ -955,7 +942,6 @@ $action=$_GET['action'];
 		echo json_encode($obj);
 	}
 	
-	//updatedetailsstocks
 	if($action=='updatedetailsstocks'){
 		$data = json_decode(file_get_contents("php://input"));		
 		$selStocks="UPDATE `stock_master` SET `stock_volume`='".$data->volume."' WHERE `stock_id`=".$data->stockid;
@@ -970,7 +956,6 @@ $action=$_GET['action'];
 		echo json_encode($obj);
 	}
 	
-	//deletedetailsstocks
 	if($action=='deletedetailsstocks'){
 		$data = json_decode(file_get_contents("php://input"));		
 		$delStocks="DELETE FROM `stock_master` WHERE `stock_id`=".$data;
@@ -983,5 +968,73 @@ $action=$_GET['action'];
 			$obj->status=false;
 		}
 		echo json_encode($obj);
+	}
+	
+	/* Project API's */
+	if($action=='SelClientFromStockDetails'){
+		$data = json_decode(file_get_contents("php://input"));
+		$selStocks="SELECT distinct(client_master.client_id),client_master.client_name,client_master.client_city FROM `stock_master`,`client_master` WHERE stock_master.stock_status='active' and stock_master.client_id=client_master.client_id";		
+		$resStocks=mysql_query($selStocks);		
+		$count = mysql_num_rows($resStocks);
+		if($count>0){
+			$cnt=0;
+			while($row = mysql_fetch_array( $resStocks )) {				
+				$tmpRes[$cnt]->client_id=$row['client_id'];				
+				$tmpRes[$cnt]->client_name=$row['client_name'];
+				$tmpRes[$cnt]->client_city=$row['client_city'];
+				$cnt++;
+			}
+			$obj->status=true;
+			$obj->clients=$tmpRes;
+		}
+		else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);
+		
+	}
+	
+	if($action=='SelProductFromClientDetails'){
+		$data = json_decode(file_get_contents("php://input"));
+		$selStocks="SELECT * FROM `stock_master`,`product_client_master` WHERE stock_master.client_id=".$data." and stock_master.stock_status='active' and product_client_master.prod_id=stock_master.prod_id";		
+		$resStocks=mysql_query($selStocks);		
+		$count = mysql_num_rows($resStocks);
+		if($count>0){
+			$cnt=0;
+			while($row = mysql_fetch_array( $resStocks )) {				
+				$tmpRes[$cnt]->prod_id=$row['prod_id'];		
+				$tmpRes[$cnt]->prod_name=$row['prod_name'];				
+				$tmpRes[$cnt]->stock_volume=$row['stock_volume'];				
+				$cnt++;
+			}
+			$obj->status=true;
+			$obj->productData=$tmpRes;
+		}
+		else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);		
+	}
+	
+	/* Project API's */
+	if($action=='startnewproj'){
+		$data = json_decode(file_get_contents("php://input"));		
+		
+		$selProjs="SELECT * FROM `project_master` WHERE `client_id`=".$data->clientid." and `product_id`=".$data->prodid;
+		$resProjs=mysql_query($selProjs);		
+		$count = mysql_num_rows($resProjs);
+		if($count<=0){
+			$insproj="INSERT INTO `project_master`(`client_id`, `product_id`, `start_date`, `est_end_date`, `project_status`) VALUES (".$data->clientid.",".$data->prodid.",'".$data->startdt."','".$data->enddt."','active')";
+			$resProj=mysql_query($insproj);
+			if($resProj){
+				$obj->status=true;
+			}else{
+				$obj->status=false;
+			}
+		}
+		else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);		
 	}
 ?>

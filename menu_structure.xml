@@ -163,4 +163,17 @@
 			</submenu>
 		</submenu_module>
 	</menu>
+	<menu>
+		<name>PROJECT</name>
+		<icon></icon>
+		<link>#</link>
+		<hasSubmenus>YES</hasSubmenus>
+		<submenu_module>
+			<submenu>
+				<name>Start Project</name>
+				<icon>fa-cubes</icon>
+				<link>#/start_project</link>
+			</submenu>
+		</submenu_module>
+	</menu>
 </menu_structure>

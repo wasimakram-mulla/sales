@@ -1,0 +1,169 @@
+<div class="col-md-8 col-sm-12" ng-controller="StartProjectController">
+	<h3 class="text-warning">Start a New Project</h3>
+<form ng-submit="startnewproj()">
+<div class="col-md-12 col-sm-12">
+	<div class="col-md-3 col-sm-4 col-xs-12">
+		<label class="form-control" style="float:right;"><span class="text-info">Select Client</span></label>
+	</div>
+	<div class="col-md-4 col-sm-4 col-xs-12">
+		<input type='hidden' class="form-control" ng-model="clientid" readonly />
+		<input type='text' class="form-control" ng-model="clientnm" placeholder="Select Client" required disabled />
+	</div>
+	<div class="col-md-1 col-sm-4 col-xs-12">
+		<button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#showClients" ng-click="viewClients()">...</button>
+	</div>	
+</div>
+
+<div class="col-md-12 col-sm-12">
+	<br/>
+	<div class="col-md-3 col-sm-4 col-xs-12">
+		<label class="form-control" style="float:right;"><span class="text-info">Select Product</span></label>
+	</div>
+	<div class="col-md-4 col-sm-4 col-xs-12">
+		<input type='hidden' class="form-control" ng-model="prodid" readonly />
+		<input type='text' class="form-control" ng-model="prodnm" placeholder="Select Product" required disabled />
+	</div>
+	<div class="col-md-1 col-sm-4 col-xs-12">
+		<button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#showProduct" ng-click="viewProducts()" ng-disabled="!clientid">...</button>		
+	</div>	
+	<div class="col-md-2 col-sm-4 col-xs-12" ng-show="stockVol">
+		<span class="text-info">(In Stock <strong>{{stockVol}}</strong>)</span>
+	</div>	
+</div>
+<div class="col-md-12 col-sm-12">
+<br/>
+	<div class="col-md-4 col-sm-4 col-xs-12">
+		<label class="text-info">Project start date: </label> 
+		<div class='input-group date' >
+			<input type='text' id='startprjdt' class="form-control" placeholder="Start Date" required />
+			<span class="input-group-addon">
+				<span class="glyphicon glyphicon-calendar"></span>
+			</span>
+		</div>
+	</div>
+	<div class="col-md-4 col-sm-4 col-xs-12">
+		<label class="text-info">Estimated end date: </label> 
+		<div class='input-group date' >
+			<input type='text' id='endprjdt' class="form-control" placeholder="End Date" required />
+			<span class="input-group-addon">
+				<span class="glyphicon glyphicon-calendar"></span>
+			</span>
+		</div>
+	</div>
+</div>
+
+<div class="col-md-12 col-sm-12">
+	<br/>
+	<button class="btn btn-lg btn-primary">Start Project</button>
+</div>
+</form>
+
+<div class="col-md-12 col-sm-12">
+	<br/><br/>
+	<strong><span class="text-warning">Note: Above listed client are only whose stocks are maintained.</span></strong>
+</div>
+<!-- Client Details modal -->
+<div class="modal fade" id="showClients" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+	<form>
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Clients Details</h4>
+      </div>
+      <div class="modal-body">  
+		<label>Search Client: </label> <input type="text" ng-model="searchClient" class="searchClient"/><br/><br/>      		
+		<table class="table table-bordered">
+			<thead>
+			  <tr>
+				<th>#</th>
+				<th>Name</th>				
+				<th>City</th>
+				<th></th>
+			  </tr>
+			</thead>
+			<tbody ng-init="tmpCnt=0;">
+			  <tr ng-repeat="data in clientData | filter:searchClient" class="fullData">
+				<td>{{$index+1}}</td>
+				<td>{{data.client_name}}</td>				
+				<td>{{data.client_city}}</td>
+				<td>
+					<button type="button" class="btn btn-xs btn-info" ng-click="setClient(data.client_id,data.client_name)" data-dismiss="modal">select</button>
+				</td>
+			  </tr>
+			  <tr class="noData">
+				<td colspan="8"> No Data Found </td>
+			  </tr>
+			  <tr class="loadData">
+				<td colspan="8"> Please Wait... <i class="fa fa-spinner fa-pulse fa-lg text-info"></i></td>
+			  </tr>
+			</tbody>
+		</table>
+      </div>
+      <div class="modal-footer">		
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>        
+      </div>
+    </div>
+	</form>
+  </div>
+</div>
+
+<!-- Product Details modal -->
+<div class="modal fade" id="showProduct" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+	<form>
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Product Details</h4>
+      </div>
+      <div class="modal-body">  
+		<label>Search Product: </label> <input type="text" ng-model="searchProd" class="searchProd"/><br/><br/>      		
+		<table class="table table-bordered">
+			<thead>
+			  <tr>
+				<th>#</th>
+				<th>Name</th>
+				<th></th>
+			  </tr>
+			</thead>
+			<tbody ng-init="tmpCnt=0;">
+			  <tr ng-repeat="data in productData | filter:searchProd" class="fullData">
+				<td>{{$index+1}}</td>
+				<td>{{data.prod_name}}</td>				
+				<td>
+					<button type="button" class="btn btn-xs btn-info" ng-click="setProduct(data.prod_id,data.prod_name,data.stock_volume)" data-dismiss="modal">select</button>
+				</td>
+			  </tr>
+			  <tr class="noData">
+				<td colspan="8"> No Data Found </td>
+			  </tr>
+			  <tr class="loadData">
+				<td colspan="8"> Please Wait... <i class="fa fa-spinner fa-pulse fa-lg text-info"></i></td>
+			  </tr>
+			</tbody>
+		</table>
+      </div>
+      <div class="modal-footer">		
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>        
+      </div>
+    </div>
+	</form>
+  </div>
+</div>
+
+</div>
+<script type="text/javascript">
+$(function() {  
+    $('#startprjdt').datetimepicker({
+		format: 'M/D/YYYY',
+		maxDate:new Date()
+	});
+    $('#endprjdt').datetimepicker({
+		format: 'M/D/YYYY',
+		minDate:new Date()
+	});
+	$('#endprjdt').val('');
+});
+  //DTP from: http://eonasdan.github.io/bootstrap-datetimepicker/
+</script>
