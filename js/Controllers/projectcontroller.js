@@ -111,3 +111,69 @@ stockmgmt.controller("StartProjectController", function($scope, $http, $route){
 		});
 	};
 });
+
+stockmgmt.controller("ModifyProjectController", function($scope, $http, $route){
+	$scope.viewProjects = function(){
+		$(".noData").hide();
+		$(".fullData").hide();
+		$(".loadData").show();
+		$http({
+				method: 'POST',
+				url: 'php/master.php?action=SelActiveProjects',
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}				
+			}).
+				success(function(data, status, headers, config) {
+			}).
+			error(function(data, status, headers, config) {
+				alert('Service Error');
+			}).
+			then(function(result){	
+				if(result.data.status==true){
+					$(".noData").hide();
+					$(".fullData").show();
+					$scope.ProjData=result.data.projectData;					
+				}
+				else{
+					$(".fullData").hide();
+					$(".noData").show();				
+				}
+				$(".loadData").hide();
+			});
+	};
+		
+	$scope.setProjectData = function(projid,client_name,prod_name,start_date,est_end_date,stock_volume){
+		$scope.projid=projid;
+		$scope.clientnm=client_name;
+		$scope.prodnm=prod_name;
+		$scope.startdt=start_date;
+		$scope.enddt=est_end_date;
+		$scope.stockavail=stock_volume;
+	};
+	
+	$scope.companyProds = function(){
+		$http({
+				method: 'POST',
+				url: 'php/master.php?action=AllProducts',
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}				
+			}).
+			error(function(data, status, headers, config) {
+				alert('Service Error');
+			}).
+			then(function(result){	
+				if(result.data.status==true){
+					$scope.compproddata=result.data.Products;
+				}
+				else{
+					alert("Please enter a Company products first");
+				}				
+			});
+	};
+	$scope.companyProds();
+	
+	$scope.addproject = function(){
+		if($scope.compprod==undefined){
+			alert("Select company's product");
+			throw "Select company's product";
+		}
+	};
+});
