@@ -398,7 +398,7 @@ stockmgmt.controller("AttendanceCorrectionController", function($scope, $http, $
 	$scope.submitCorrectionChanges = function(){	
 		
 		if($scope.logout_time==null){
-			var Outdt=new Date();			
+			var Outdt=new Date();
 			Outdt.setDate(parseInt($scope.login_date));
 			Outdt.setMonth(parseInt($scope.login_month)-1);
 			Outdt.setYear(parseInt($scope.login_year));

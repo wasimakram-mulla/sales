@@ -82,6 +82,9 @@ stockmgmt.config(['$routeProvider','$resourceProvider',
       when('/view_stock_details:param', {
         templateUrl: 'views/view_stock_details.html'
       }).
+      when('/start_project', {
+        templateUrl: 'views/start_project.html'
+      }).
       otherwise({
         redirectTo: '/dashboard'
       });
