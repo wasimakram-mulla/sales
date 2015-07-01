@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 22, 2015 at 11:17 AM
+-- Generation Time: Jun 30, 2015 at 11:25 AM
 -- Server version: 5.5.24-log
 -- PHP Version: 5.3.13
 
@@ -69,7 +69,7 @@ INSERT INTO `attendance_register` (`login_id`, `emp_id`, `record_date`, `login_d
 (206, 9, '1434691344000', '19', '6', '2015', '1434691346359', NULL, 'loggedIn'),
 (207, 10, '1434691344000', '19', '6', '2015', '1434691346359', NULL, 'loggedIn'),
 (208, 11, '1434691344000', '19', '6', '2015', '1434691346359', NULL, 'loggedIn'),
-(209, 1, '1434954490000', '22', '6', '2015', '1434954498690', NULL, 'loggedIn'),
+(209, 1, '1434954490000', '22', '6', '2015', '1434954498690', '1434973088191', 'complete'),
 (210, 3, '1434954490000', '22', '6', '2015', '1434954498690', NULL, 'loggedIn'),
 (211, 8, '1434954490000', '22', '6', '2015', '1434954498690', NULL, 'loggedIn'),
 (212, 9, '1434954490000', '22', '6', '2015', '1434954498690', NULL, 'loggedIn'),
@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `client_master` (
 
 INSERT INTO `client_master` (`client_id`, `client_name`, `client_addr`, `client_city`, `client_contact`, `client_alternate_contact`, `pincode`, `client_email`, `client_status`) VALUES
 (7, 'wasim123', 'Camp', 'Pune', '1010101010', '1212121212', 411001, 'wasim123@gmail.com', 'active'),
-(8, 'Demo', 'Demo addr', 'Mumbai', '123456789', '0000000000', 400001, 'demo@gmail.com', 'deactive');
+(8, 'Demo', 'Demo addr', 'Mumbai', '123456789', '0000000000', 400001, 'demo@gmail.com', 'active');
 
 -- --------------------------------------------------------
 
@@ -200,11 +200,31 @@ CREATE TABLE IF NOT EXISTS `employee_master` (
 
 INSERT INTO `employee_master` (`emp_id`, `emp_name`, `emp_address`, `emp_city`, `emp_pincode`, `emp_pcontact`, `emp_acontact`, `emp_email`, `emp_dept`, `emp_desig`, `emp_type`, `emp_sal_per_day`, `emp_doj`, `emp_status`) VALUES
 (1, 'Wasim', 'Camp', 'Kolhapur', 411001, 123456789, 123456789, 'tesT@gmail.com', 'Cleaners', 'Tester', 'Part Time', '1000', '01-01-2015', 'active'),
-(3, 'Test 5', 'Pune', 'pune', 411001, 123456789, 123456789, 'test2@gmail.com', 'Cleaners', 'Tester', 'Full Time Regular', '56', '01-05-2015', 'active'),
-(8, 'Test 1', 'Pune', 'Pune', 411001, 123456, 456789, 'test@gmail.com', 'Cleaners', 'Jobs Maker', 'Part Time', '100', '1433788200000', 'active'),
+(3, 'Test 5', 'Pune', 'pune', 411001, 123456789, 123456789, 'test2@gmail.com', 'Washers', 'Tester', 'Full Time Regular', '56', '01-05-2015', 'active'),
+(8, 'Test 1', 'Pune', 'Pune', 411001, 123456, 456789, 'test@gmail.com', 'Washers', 'Jobs Maker', 'Part Time', '100', '1433788200000', 'active'),
 (9, 'Test 2', 'Mumbai', 'Mumbai', 410001, 123456789, 987654321, 'newtest@gmail.com', 'Cleaners', 'Tester', 'Part Time', '500', '1434306600000', 'active'),
 (10, 'Test 3', 'asd', 'Agra', 420123, 101010101, 2147483647, 'test2@gmail.com', 'Washers', 'Jobs Maker', 'Part Time', '123', '1433183400000', 'active'),
 (11, 'Test 4', 'Pune', 'Pune', 412012, 1234, 4321, 'test4@gmail.com', 'Cleaners', 'Jobs Maker', 'Full Time Regular', '500', '1434565800000', 'active');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_client_master`
+--
+
+CREATE TABLE IF NOT EXISTS `product_client_master` (
+  `prod_id` int(10) NOT NULL AUTO_INCREMENT,
+  `prod_name` varchar(50) NOT NULL,
+  PRIMARY KEY (`prod_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+--
+-- Dumping data for table `product_client_master`
+--
+
+INSERT INTO `product_client_master` (`prod_id`, `prod_name`) VALUES
+(2, 'Rods'),
+(3, 'Raw Disk');
 
 -- --------------------------------------------------------
 
@@ -225,6 +245,32 @@ CREATE TABLE IF NOT EXISTS `product_master` (
 INSERT INTO `product_master` (`prod_id`, `prod_name`) VALUES
 (5, 'Demo Product'),
 (6, 'Filters');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `project_master`
+--
+
+CREATE TABLE IF NOT EXISTS `project_master` (
+  `project_id` int(10) NOT NULL AUTO_INCREMENT,
+  `client_id` int(10) NOT NULL,
+  `prod_id` int(10) NOT NULL,
+  `stock_id` int(10) DEFAULT NULL,
+  `start_date` varchar(50) DEFAULT NULL,
+  `est_end_date` varchar(50) DEFAULT NULL,
+  `project_status` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`project_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+
+--
+-- Dumping data for table `project_master`
+--
+
+INSERT INTO `project_master` (`project_id`, `client_id`, `prod_id`, `stock_id`, `start_date`, `est_end_date`, `project_status`) VALUES
+(1, 7, 3, 4, '1434795962022', '1435659962022', 'active'),
+(3, 7, 2, 3, '1434447703672', '1435657303672', 'active'),
+(4, 8, 2, 5, '1433152930381', '1436954530381', 'active');
 
 -- --------------------------------------------------------
 
@@ -265,12 +311,37 @@ CREATE TABLE IF NOT EXISTS `salary_register` (
 --
 
 INSERT INTO `salary_register` (`salary_id`, `sal_id`, `emp_id`, `salary_amount`) VALUES
-(21, 5, 1, '3000'),
+(21, 5, 1, '3500'),
 (22, 5, 3, '140'),
 (23, 5, 8, '250'),
 (24, 5, 9, '1250'),
 (25, 5, 10, '307.5'),
 (26, 5, 11, '1250');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `stock_master`
+--
+
+CREATE TABLE IF NOT EXISTS `stock_master` (
+  `stock_id` int(10) NOT NULL AUTO_INCREMENT,
+  `client_id` int(10) NOT NULL,
+  `prod_id` int(10) NOT NULL,
+  `stock_volume` int(10) DEFAULT NULL,
+  `stock_date` varchar(20) DEFAULT NULL COMMENT 'stock provided date',
+  `stock_status` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`stock_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+
+--
+-- Dumping data for table `stock_master`
+--
+
+INSERT INTO `stock_master` (`stock_id`, `client_id`, `prod_id`, `stock_volume`, `stock_date`, `stock_status`) VALUES
+(3, 7, 2, 35, '1435128795982', 'active'),
+(4, 7, 3, 50, '1435568024260', 'active'),
+(5, 8, 2, 14, '1434358846239', 'active');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

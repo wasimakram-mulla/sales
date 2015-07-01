@@ -1,0 +1,129 @@
+<div class="col-md-8 col-sm-12" ng-controller="ModifyProjectController">
+	<h3 class="text-warning">Make Product</h3><br/>
+<div class="col-md-12 col-sm-12">
+	<div class="col-md-12 col-sm-12 col-xs-12">
+		<strong class="text-danger">Project Making Time: <span my-current-time="format"></span></strong><br/><br/>
+	</div>
+</div>	
+<div class="col-md-12 col-sm-12">	
+	<div class="col-md-4 col-sm-4 col-xs-12">
+		<label class="form-control"><span class="text-info">Select Project</span></label>
+	</div>
+	<div class="col-md-4 col-sm-4 col-xs-12">		
+		<input type='text' class="form-control" ng-model="projid" placeholder="Select Project" required disabled />
+	</div>
+	<div class="col-md-1 col-sm-4 col-xs-12">
+		<button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#showProjects" ng-click="viewProjects()">...</button>
+	</div>	
+</div>
+
+<div class="col-md-12 col-sm-12">
+	<div class="col-md-4 col-sm-4 col-xs-12">
+		<label class="form-control"><span class="text-info">Client Name</span></label>
+	</div>
+	<div class="col-md-4 col-sm-4 col-xs-12">		
+		<input type='text' class="form-control" ng-model="clientnm" placeholder="Client Name" disabled />
+	</div>
+</div>
+<div class="col-md-12 col-sm-12">
+	<div class="col-md-4 col-sm-4 col-xs-12">
+		<label class="form-control"><span class="text-info">Client Product</span></label>
+	</div>
+	<div class="col-md-4 col-sm-4 col-xs-12">		
+		<input type='text' class="form-control" ng-model="prodnm" placeholder="Product Name" disabled />
+	</div>
+</div>
+<div class="col-md-12 col-sm-12">
+	<div class="col-md-4 col-sm-4 col-xs-12">
+		<label class="form-control"><span class="text-info">Stock Available</span></label>
+	</div>
+	<div class="col-md-4 col-sm-4 col-xs-12">		
+		<input type='text' class="form-control" ng-model="stockavail" placeholder="Stock Available" disabled />
+	</div>
+</div>
+<form ng-submit="addproject()">
+<div class="col-md-12 col-sm-12">
+	<div class="col-md-4 col-sm-4 col-xs-12">
+		<label class="form-control"><span class="text-info">Select Company Product</span></label>
+	</div>
+	<div class="col-md-4 col-sm-4 col-xs-12">		
+		<select ng-model="compprod" class="form-control">
+			<option ng-repeat="dt in compproddata" ng-value="dt.Product_id">{{dt.Product_name}}</option>
+		</select>
+	</div>
+</div>
+<div class="col-md-12 col-sm-12">
+	<div class="col-md-4 col-sm-4 col-xs-12">
+		<label class="form-control"><span class="text-info">Stocks Used</span></label>
+	</div>
+	<div class="col-md-4 col-sm-4 col-xs-12">		
+		<input type='number' class="form-control" ng-model="stockused" placeholder="Stocks Used" required />
+	</div>
+</div>
+<div class="col-md-12 col-sm-12">
+	<div class="col-md-4 col-sm-4 col-xs-12">
+		<label class="form-control"><span class="text-info">Outputs Created</span></label>
+	</div>
+	<div class="col-md-4 col-sm-4 col-xs-12">		
+		<input type='number' class="form-control" ng-model="outputmade" placeholder="Total Outputs Created" required />
+	</div>
+</div>
+<div class="col-md-12 col-sm-12">
+	<div class="col-md-12 col-sm-12 col-xs-12">	
+		<button class="btn btn-sm btn-success" title="Make Product" ng-disabled="!projid">Make Product</button>
+	</div>
+</div>
+</form>
+
+<!-- Project Details modal -->
+<div class="modal fade" id="showProjects" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+	<form>
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Project Details</h4>
+      </div>
+      <div class="modal-body">  
+		<label>Search Project: </label> <input type="text" ng-model="searchprj" class="searchprj"/><br/><br/>      		
+		<table class="table table-bordered">
+			<thead>
+			  <tr>
+				<th>Project Id</th>
+				<th>Client Name</th>
+				<th>Product Name</th>
+				<th>Start Date</th>
+				<th>Estimate End Date</th>
+				<th>Stock Available</th>
+				<th></th>
+			  </tr>
+			</thead>
+			<tbody>
+			  <tr ng-repeat="data in ProjData | filter:searchprj" class="fullData">
+				<td>{{data.project_id}}</td>
+				<td>{{data.client_name}}</td>
+				<td>{{data.prod_name}}</td>				
+				<td>{{data.start_date | date:"d-M-yyyy"}}</td>
+				<td>{{data.est_end_date | date:"d-M-yyyy"}}</td>
+				<td>{{data.stock_volume}}</td>
+				<td>
+					<button type="button" class="btn btn-xs btn-info" ng-click="setProjectData(data.project_id,data.client_name,data.prod_name,data.start_date,data.est_end_date,data.stock_volume,data.stock_id)" data-dismiss="modal">select</button>
+				</td>
+			  </tr>
+			  <tr class="noData">
+				<td colspan="8"> No Data Found </td>
+			  </tr>
+			  <tr class="loadData">
+				<td colspan="8"> Please Wait... <i class="fa fa-spinner fa-pulse fa-lg text-info"></i></td>
+			  </tr>
+			</tbody>
+		</table>
+      </div>
+      <div class="modal-footer">		
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>        
+      </div>
+    </div>
+	</form>
+  </div>
+</div>
+</div>

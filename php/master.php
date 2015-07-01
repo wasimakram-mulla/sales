@@ -1020,11 +1020,63 @@ $action=$_GET['action'];
 	if($action=='startnewproj'){
 		$data = json_decode(file_get_contents("php://input"));		
 		
-		$selProjs="SELECT * FROM `project_master` WHERE `client_id`=".$data->clientid." and `product_id`=".$data->prodid;
-		$resProjs=mysql_query($selProjs);		
+		$selProjs="SELECT * FROM `project_master` WHERE `client_id`=".$data->clientid." and `prod_id`=".$data->prodid;
+		$resProjs=mysql_query($selProjs);
 		$count = mysql_num_rows($resProjs);
 		if($count<=0){
-			$insproj="INSERT INTO `project_master`(`client_id`, `product_id`, `start_date`, `est_end_date`, `project_status`) VALUES (".$data->clientid.",".$data->prodid.",'".$data->startdt."','".$data->enddt."','active')";
+			$selstk="SELECT * FROM `stock_master` WHERE `client_id`=".$data->clientid." and `prod_id`=".$data->prodid;
+			$resstk=mysql_query($selstk);
+			$rowStocks = mysql_fetch_array($resstk,MYSQL_BOTH);
+			$stk=$rowStocks['stock_id'];
+			
+			$insproj="INSERT INTO `project_master`(`client_id`, `prod_id`, `stock_id`, `start_date`, `est_end_date`, `project_status`) VALUES (".$data->clientid.",".$data->prodid.",".$stk.",'".$data->startdt."','".$data->enddt."','active')";
+			$resProj=mysql_query($insproj);
+			if($resProj){
+				$obj->status=true;
+			}else{
+				$obj->status=false;
+			}
+		}
+		else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);		
+	}
+	
+	if($action=='SelActiveProjects'){
+		$data = json_decode(file_get_contents("php://input"));		
+		
+		$selProjs="SELECT * FROM `project_master`, `client_master`, `product_client_master`, `stock_master` where project_master.project_status='active' and client_master.client_id=project_master.client_id and product_client_master.prod_id=project_master.prod_id and stock_master.stock_id=project_master.stock_id and not stock_master.stock_volume = 0";
+		$resProjs=mysql_query($selProjs);		
+		$count = mysql_num_rows($resProjs);
+		if($count>0){
+			$cnt=0;
+			while($row = mysql_fetch_array( $resProjs )) {
+				$tmpRes[$cnt]->project_id=$row['project_id'];
+				$tmpRes[$cnt]->prod_name=$row['prod_name'];
+				$tmpRes[$cnt]->start_date=$row['start_date'];
+				$tmpRes[$cnt]->est_end_date=$row['est_end_date'];
+				$tmpRes[$cnt]->client_name=$row['client_name'];				
+				$tmpRes[$cnt]->stock_id=$row['stock_id'];
+				$tmpRes[$cnt]->stock_volume=$row['stock_volume'];
+				$cnt++;
+			}
+			$obj->status=true;
+			$obj->projectData=$tmpRes;
+		}
+		else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);		
+	}
+	
+	if($action=='makeproject'){
+		$data = json_decode(file_get_contents("php://input"));		
+		$selStocks="UPDATE `stock_master` SET `stock_volume`='".$data->stockrem."' WHERE `stock_id`=".$data->stockid;
+		$resStocks=mysql_query($selStocks);		
+		
+		if($resStocks){
+			$insproj="INSERT INTO `work_register`(`project_id`, `comp_prod_id`, `stock_used`, `outputs_created`, `work_date`) VALUES (".$data->prjid.",".$data->prodid.",".$data->stockused.",".$data->outputcreated.",'".$data->work_date."')";
 			$resProj=mysql_query($insproj);
 			if($resProj){
 				$obj->status=true;
