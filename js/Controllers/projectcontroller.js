@@ -141,13 +141,12 @@ stockmgmt.controller("ModifyProjectController", function($scope, $http, $route){
 			});
 	};
 		
-	$scope.setProjectData = function(projid,client_name,prod_name,start_date,est_end_date,stock_volume){
+	$scope.setProjectData = function(projid,client_name,prod_name,start_date,est_end_date,stock_volume,stock_id){
 		$scope.projid=projid;
 		$scope.clientnm=client_name;
 		$scope.prodnm=prod_name;
-		$scope.startdt=start_date;
-		$scope.enddt=est_end_date;
 		$scope.stockavail=stock_volume;
+		$scope.stock_id=stock_id;
 	};
 	
 	$scope.companyProds = function(){
@@ -171,9 +170,49 @@ stockmgmt.controller("ModifyProjectController", function($scope, $http, $route){
 	$scope.companyProds();
 	
 	$scope.addproject = function(){
+		console.log('in addproject');
 		if($scope.compprod==undefined){
 			alert("Select company's product");
 			throw "Select company's product";
+		}		
+		if((parseInt($scope.stockavail)-parseInt($scope.stockused))<0){
+			alert('Stock Used cannot be more than Stock Available');
+			throw 'Stock Used cannot be more than Stock Available';
 		}
+		
+		if(parseInt($scope.stockused)<0 || parseInt($scope.outputmade)<0){
+			alert('Entries Cannot be Negative');
+			throw 'Entries Cannot be Negative';
+		}
+		var dt=new Date();
+		var makeprjObj={
+			"prjid":$scope.projid,
+			"prodid":$scope.compprod,
+			"stockused":parseInt($scope.stockused),
+			"stockrem":(parseInt($scope.stockavail)-parseInt($scope.stockused)),
+			"stockid":$scope.stock_id,
+			"outputcreated":$scope.outputmade,
+			"work_date":dt.getTime()
+		};
+		$http({
+				method: 'POST',
+				url: 'php/master.php?action=makeproject',
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+				data:makeprjObj
+			}).
+			error(function(data, status, headers, config) {
+				alert('Service Error');
+			}).
+			then(function(result){	
+				if(result.data.status==true){
+					$(".btn.btn-sm.btn-success").parent().append(' <span class="text-success">Work Modified Successful</span>');
+					setTimeout(function(){
+						$route.reload();
+					},2000);
+				}
+				else{
+					alert("Error... Please contact Administrator");
+				}				
+			});
 	};
 });

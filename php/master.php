@@ -1057,11 +1057,32 @@ $action=$_GET['action'];
 				$tmpRes[$cnt]->start_date=$row['start_date'];
 				$tmpRes[$cnt]->est_end_date=$row['est_end_date'];
 				$tmpRes[$cnt]->client_name=$row['client_name'];				
+				$tmpRes[$cnt]->stock_id=$row['stock_id'];
 				$tmpRes[$cnt]->stock_volume=$row['stock_volume'];
 				$cnt++;
 			}
 			$obj->status=true;
 			$obj->projectData=$tmpRes;
+		}
+		else{
+			$obj->status=false;
+		}
+		echo json_encode($obj);		
+	}
+	
+	if($action=='makeproject'){
+		$data = json_decode(file_get_contents("php://input"));		
+		$selStocks="UPDATE `stock_master` SET `stock_volume`='".$data->stockrem."' WHERE `stock_id`=".$data->stockid;
+		$resStocks=mysql_query($selStocks);		
+		
+		if($resStocks){
+			$insproj="INSERT INTO `work_register`(`project_id`, `comp_prod_id`, `stock_used`, `outputs_created`, `work_date`) VALUES (".$data->prjid.",".$data->prodid.",".$data->stockused.",".$data->outputcreated.",'".$data->work_date."')";
+			$resProj=mysql_query($insproj);
+			if($resProj){
+				$obj->status=true;
+			}else{
+				$obj->status=false;
+			}
 		}
 		else{
 			$obj->status=false;

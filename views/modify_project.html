@@ -35,22 +35,6 @@
 </div>
 <div class="col-md-12 col-sm-12">
 	<div class="col-md-4 col-sm-4 col-xs-12">
-		<label class="form-control"><span class="text-info">Start Date</span></label>
-	</div>
-	<div class="col-md-4 col-sm-4 col-xs-12">		
-		<input type='text' class="form-control" ng-model="startdt" placeholder="Start Date" disabled />
-	</div>
-</div>
-<div class="col-md-12 col-sm-12">
-	<div class="col-md-4 col-sm-4 col-xs-12">
-		<label class="form-control"><span class="text-info">End Date</span></label>
-	</div>
-	<div class="col-md-4 col-sm-4 col-xs-12">		
-		<input type='text' class="form-control" ng-model="enddt" placeholder="End Date" disabled />
-	</div>
-</div>
-<div class="col-md-12 col-sm-12">
-	<div class="col-md-4 col-sm-4 col-xs-12">
 		<label class="form-control"><span class="text-info">Stock Available</span></label>
 	</div>
 	<div class="col-md-4 col-sm-4 col-xs-12">		
@@ -73,7 +57,15 @@
 		<label class="form-control"><span class="text-info">Stocks Used</span></label>
 	</div>
 	<div class="col-md-4 col-sm-4 col-xs-12">		
-		<input type='text' class="form-control" ng-model="stockused" placeholder="Stocks Used" required />
+		<input type='number' class="form-control" ng-model="stockused" placeholder="Stocks Used" required />
+	</div>
+</div>
+<div class="col-md-12 col-sm-12">
+	<div class="col-md-4 col-sm-4 col-xs-12">
+		<label class="form-control"><span class="text-info">Outputs Created</span></label>
+	</div>
+	<div class="col-md-4 col-sm-4 col-xs-12">		
+		<input type='number' class="form-control" ng-model="outputmade" placeholder="Total Outputs Created" required />
 	</div>
 </div>
 <div class="col-md-12 col-sm-12">
@@ -115,7 +107,7 @@
 				<td>{{data.est_end_date | date:"d-M-yyyy"}}</td>
 				<td>{{data.stock_volume}}</td>
 				<td>
-					<button type="button" class="btn btn-xs btn-info" ng-click="setProjectData(data.project_id,data.client_name,data.prod_name,data.start_date,data.est_end_date,data.stock_volume)" data-dismiss="modal">select</button>
+					<button type="button" class="btn btn-xs btn-info" ng-click="setProjectData(data.project_id,data.client_name,data.prod_name,data.start_date,data.est_end_date,data.stock_volume,data.stock_id)" data-dismiss="modal">select</button>
 				</td>
 			  </tr>
 			  <tr class="noData">
